@@ -1,0 +1,48 @@
+from app import db
+from app.models.Room import Room
+
+
+def get_all_rooms():
+    """Retrieve all rooms."""
+    return Room.query.filter_by(is_delete=False).all()
+
+def get_room_by_id(room_id):
+    """Retrieve a room by its ID."""
+    return Room.query.filter_by(ID=room_id, is_delete=False).first()
+
+
+def create_room(name, seats):
+    """Create a new room."""
+    if Room.query.filter_by(name=name, is_delete=False).first():
+        raise ValueError("Room with this name already exists")
+
+    new_room = Room(name=name, seats=seats)
+    db.session.add(new_room)
+    db.session.commit()
+    return new_room
+
+def update_room(room_id, name=None, seats=None):
+    """Update an existing room."""
+    room = get_room_by_id(room_id)
+    if not room:
+        raise ValueError("Room not found")
+    if name and Room.query.filter_by(name=name, is_delete=False).first():
+        raise ValueError("Room with this name already exists")
+
+    if name:
+        room.name = name
+    if seats is not None:  # Allow seats to be updated to 0
+        room.seats = seats
+
+    db.session.commit()
+    return room
+
+def delete_room(room_id):
+    """Soft delete a room by setting is_delete to True."""
+    room = get_room_by_id(room_id)
+    if not room:
+        raise ValueError("Room not found")
+
+    room.is_delete = True
+    db.session.commit()
+    return room
