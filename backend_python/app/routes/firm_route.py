@@ -38,6 +38,19 @@ def get_firm_by_id_route(firm_id):
 
 
 
+# get all broadcasts for a firm
+# # link: localhost:5000/api/firms/get_broadcasts/<firm_id>
+
+@FIRM_BLUEPRINT.route('/get_broadcasts/<int:firm_id>', methods=['GET'])
+# @jwt_required()
+def get_firm_broadcasts_route(firm_id):
+    firm = get_firm_by_id(firm_id)
+    if not firm:
+        return jsonify({'message': 'Firm not found'}), 404
+    broadcasts = firm.get_broadcasts()
+    return jsonify([broadcast.serialize() for broadcast in broadcasts]), 200
+
+
 # Create a new firm
 # # link: localhost:5000/api/firms/create
 '''
@@ -50,6 +63,7 @@ def get_firm_by_id_route(firm_id):
     "end_date": "2023-12-31",
     "rating": 4.5,
     "rating_count": 100,
+    "runtime": 100,
     "images": [
         "http://example.com/image1.jpg",
         "http://example.com/image2.jpg"
@@ -86,7 +100,8 @@ def create_new_firm():
     "description": "This is an updated firm.",
     "thumbnail": "http://example.com/updated_thumbnail.jpg",
     "rating": 4.8,
-    "rating_count": 150
+    "rating_count": 150,
+    "runtime": 110
 }
 
 '''

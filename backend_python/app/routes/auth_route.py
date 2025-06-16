@@ -10,6 +10,11 @@ AUTH_BLUEPRINT = Blueprint('auth', __name__)
 #link: localhost:5000/api/auth/login
 
 '''
+{
+    
+}
+
+
 trả về:
 {
     "ID": 1,
@@ -53,17 +58,14 @@ def logout():
     "name": "Test User",
     "phone": "1234567890",
     "email": "testuser@example.com"
-    "role": "user"
-    
 }
-
 '''
 
 #link: localhost:5000/api/auth/register
 @AUTH_BLUEPRINT.route('/register', methods=['POST'])
 def register():
     data = request.get_json()
-    fields = ['username', 'password', 'name', 'phone', 'email', 'role']
+    fields = ['username', 'password', 'name', 'phone', 'email']
     for field in fields:
         if field not in data:
             return jsonify({'message': f'{field} is required'}), 400
@@ -73,13 +75,13 @@ def register():
     name = data.get('name')
     phone = data.get('phone')
     email = data.get('email')
-    role = data.get('role')
 
-    if not all([username, password, name, phone, email, role]):
+
+    if not all([username, password, name, phone, email]):
         return jsonify({'message': 'All fields are required'}), 400
     
     try:
-        result = register_service(username, password, name, phone, email, role)
+        result = register_service(username, password, name, phone, email)
         return result
     except ValueError as e:
         return jsonify({'message': str(e)}), 400

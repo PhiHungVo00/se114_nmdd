@@ -23,6 +23,5 @@ class Seat(db.Model):
             'BroadcastID': self.BroadcastID,
             'Name': self.name,
             'RoomID': self.roomID,
-            'IsDeleted': self.is_delete,
             'IsBought': self.is_bought
         }

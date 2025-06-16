@@ -59,7 +59,20 @@ def get_broadcast_route(broadcast_id):
         return jsonify(broadcast.serialize_detail_seats()), 200
     except ValueError as e:
         return jsonify({"error": str(e)}), 404
+    
 
+# Get all seats for a broadcast
+# # link: localhost:5000/api/broadcasts/seats/<broadcast_id>
+@BROADCAST_BLUEPRINT.route('/seats/<int:broadcast_id>', methods=['GET'])
+def get_all_seats_for_broadcast_route(broadcast_id):
+    try:
+        broadcast = get_broadcast_by_id(broadcast_id)
+        seats = broadcast.seats_list
+        if not seats:
+            return jsonify({"message": "No seats available for this broadcast"}), 404
+        return jsonify([seat.serialize() for seat in seats]), 200
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 404
 
 
 # Get all broadcasts for a room
@@ -75,7 +88,11 @@ def get_all_broadcasts_for_room_route(room_id):
 # # link: localhost:5000/api/broadcasts/firm/<firm_id>
 @BROADCAST_BLUEPRINT.route('/firm/<int:firm_id>', methods=['GET'])
 def get_all_broadcasts_for_firm_route(firm_id):
-    broadcasts = get_all_broadcasts_for_firm(firm_id)
+    date = request.args.get('date')
+    if date is None:
+        broadcasts = get_all_broadcasts_for_firm(firm_id)
+    else:
+        broadcasts = get_all_broadcasts_for_firm(firm_id, date)
     return jsonify([broadcast.serialize() for broadcast in broadcasts]), 200
 
 

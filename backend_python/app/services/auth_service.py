@@ -40,7 +40,7 @@ def logout_service():
     return jsonify({'message': 'Đăng xuất thành công'}), 200
 
 
-def register_service(username, password, name, phone, email, role):
+def register_service(username, password, name, phone, email, role= 'user'):
     if (User.query.filter_by(username=username, is_delete=False).first() 
         or User.query.filter_by(email=email, is_delete=False).first()
         or User.query.filter_by(phone=phone, is_delete=False).first()):

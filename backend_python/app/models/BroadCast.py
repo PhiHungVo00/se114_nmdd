@@ -27,8 +27,7 @@ class Broadcast(db.Model):
             'TimeBroadcast': self.timeBroadcast.isoformat() if self.timeBroadcast else None,
             'DateBroadcast': self.dateBroadcast.isoformat() if self.dateBroadcast else None,
             'Price': self.price,
-            'Seats': self.seats,
-            'IsDeleted': self.is_delete
+            'Seats': self.seats
         }
     
     def serialize_detail_seats(self):
@@ -40,7 +39,6 @@ class Broadcast(db.Model):
             'DateBroadcast': self.dateBroadcast.isoformat() if self.dateBroadcast else None,
             'Price': self.price,
             'Seats': self.seats,
-            'IsDeleted': self.is_delete,
             'SeatsList': [seat.serialize() for seat in self.seats_list]
         }
     

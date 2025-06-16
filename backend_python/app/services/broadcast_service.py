@@ -49,10 +49,11 @@ def create_seats_for_broadcast(broadcast_id, seats, room_id):
 # Create a new broadcast
 def create_broadcast(room_id, firm_id, time_broadcast, date_broadcast, price, seats):
     """Create a new broadcast."""
-    if seats > Room.query.filter_by(ID=room_id).first().seats:
-        raise ValueError("Number of seats exceeds room capacity")
-    
 
+    if not Room.query.filter_by(ID=room_id, is_delete=False).first():
+        raise ValueError("Room not found or is deleted")
+    if seats > Room.query.get(room_id).seats:
+        raise ValueError("Number of seats exceeds room capacity")
 
     time_broadcast = format_time(time_broadcast)
     date_broadcast = format_date(date_broadcast)
@@ -112,15 +113,18 @@ def get_all_broadcasts_for_room(room_id):
     return broadcasts
 
 
-def get_all_broadcasts_for_firm(firm_id):
+def get_all_broadcasts_for_firm(firm_id, date_broadcast=None):
     """Retrieve all broadcasts for a specific firm."""
     broadcasts = Broadcast.query.filter(
         and_(
             Broadcast.FirmID == firm_id,
             Broadcast.is_delete == False
         )
-    ).all()
-    return broadcasts
+    )
+    if date_broadcast:
+        broadcasts = broadcasts.filter(Broadcast.dateBroadcast == date_broadcast)
+    return broadcasts.all()
+
 
 
 def get_all_broadcasts_on_date(date_broadcast):
