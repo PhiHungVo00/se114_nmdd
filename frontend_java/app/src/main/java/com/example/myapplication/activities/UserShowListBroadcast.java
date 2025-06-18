@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,8 +44,10 @@ public class UserShowListBroadcast extends AppCompatActivity {
     private List<BroadcastFirm> broadcastFirmList;
     private RecyclerView broadcastFirmRecyclerView;
     private ImageButton btnSearchCalendar;
+    private ImageView imageBack;
 
 
+    @SuppressLint("MissingInflatedId")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +58,7 @@ public class UserShowListBroadcast extends AppCompatActivity {
         Log.e("UserDetailFirm", "Received firm ID: " + firmId);
         textSelectedDate = findViewById(R.id.textSelectedDate);
         btnSearchCalendar = findViewById(R.id.btnSearch);
+        imageBack = findViewById(R.id.imageBack);
 
 
 
@@ -72,7 +76,7 @@ public class UserShowListBroadcast extends AppCompatActivity {
         //        Listeners
         setCalendarListener();
         setSearchCalandarListener();
-
+        setBackButtonListener();
     }
 
 //    Listener for the calendar text view
@@ -163,6 +167,13 @@ public class UserShowListBroadcast extends AppCompatActivity {
             Toast.makeText(this, "Không có lịch chiếu cho ngày đã chọn", Toast.LENGTH_SHORT).show();
         }
 
+    }
+
+//    listener for the back button
+    void setBackButtonListener() {
+        imageBack.setOnClickListener(v -> {
+            finish(); // Close the current activity
+        });
     }
 
 }

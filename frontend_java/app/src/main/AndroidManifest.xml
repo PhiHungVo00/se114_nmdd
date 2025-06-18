@@ -43,6 +43,18 @@
         <activity
             android:name=".activities.UserMainActivity"
             android:exported="false" />
+        <activity
+            android:name=".activities.UserAdminShowDetailTicket"
+            android:exported="false" />
+        <activity
+            android:name=".activities.UserActivityHistoryBookingTicket"
+            android:exported="false" />
+        <activity
+            android:name=".activities.UserActivityProfile"
+            android:exported="false" />
+        <activity
+            android:name=".activities.UserEditProfile"
+            android:exported="false" />
     </application>
 
 </manifest>

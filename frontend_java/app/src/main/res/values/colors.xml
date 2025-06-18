@@ -11,6 +11,7 @@
     <color name="colorTextPrimary">#CBD5ED</color>
     <color name="colorTextIcons">#ffffff</color>
     <color name="colorTextOther">#FAD303</color>
+    <color name="primary_blue">#2196F3</color>
     <color name="colorAccent">#0097FB</color>
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>

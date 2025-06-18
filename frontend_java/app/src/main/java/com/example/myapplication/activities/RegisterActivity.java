@@ -23,13 +23,13 @@ import retrofit2.Response;
 
 public class RegisterActivity extends AppCompatActivity {
     ApiAuthService apiAuthService;
+    RegisterRequest registerRequest;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
         apiAuthService = ApiClient.getRetrofit().create(ApiAuthService.class);
-
 
 
         findViewById(R.id.btnRegister).setOnClickListener(v -> {
@@ -55,9 +55,11 @@ public class RegisterActivity extends AppCompatActivity {
                 return;
             }
 
+            registerRequest = new RegisterRequest(username, password, fullName, email, phone);
+            RegisterApi(registerRequest);
 
-            Toast.makeText(this, "Đăng ký thành công!", Toast.LENGTH_SHORT).show();
-            finish(); // quay lại màn hình chính
+
+
         });
         TextView loginLink = findViewById(R.id.tvLoginLink);
         loginLink.setOnClickListener(v -> {
@@ -69,28 +71,30 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
 
-//    private void RegisterApi(RegisterRequest registerRequest) {
-//        Call<RegisterReponse> call = apiAuthService.register(registerRequest);
-//        call.enqueue(new Callback<RegisterReponse>() {
-//
-//
-//            @Override
-//            public void onResponse(Call<RegisterReponse> call, Response<RegisterReponse> response) {
-//                if (response.isSuccessful() && response.body() != null) {
-//
-//                } else {
-//                    Toast.makeText(RegisterActivity.this, "Sai tài khoản hoặc mật khẩu", Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//
-//
-//            @Override
-//            public void onFailure(Call<RegisterReponse> call, Throwable t) {
-//
-//            }
-//
-//        });
-//    }
+    private void RegisterApi(RegisterRequest registerRequest) {
+        Call<RegisterReponse> call = apiAuthService.register(registerRequest);
+        call.enqueue(new Callback<RegisterReponse>() {
+
+
+            @Override
+            public void onResponse(Call<RegisterReponse> call, Response<RegisterReponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Toast.makeText(RegisterActivity.this,"Đăng ký thành công!", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(RegisterActivity.this, "Sai tài khoản hoặc mật khẩu", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+
+            @Override
+            public void onFailure(Call<RegisterReponse> call, Throwable t) {
+
+            }
+
+        });
+    }
 
 
 

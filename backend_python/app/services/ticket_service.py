@@ -21,7 +21,8 @@ def create_ticket(user_id, broadcast_id, seat_id):
         ticket = Ticket(
             broadcast_id=broadcast_id,
             seat_id=seat_id,
-            date_order=datetime.now(),
+            date_order=datetime.now().date(),
+            time_order=datetime.now().time(),
             user_id=user_id,
             price=price
         )
@@ -30,7 +31,7 @@ def create_ticket(user_id, broadcast_id, seat_id):
         # Set the seat as bought
         set_seat_bought(seat_id)
         create_or_update_total_day(price, ticket.dateOrder.day, ticket.dateOrder.month, ticket.dateOrder.year)
-        return ticket
+        return get_ticket_detail_by_id(ticket.ID)
     except Exception as e:
         db.session.rollback()
         raise ValueError(f"Error creating ticket: {str(e)}")
@@ -57,7 +58,7 @@ def get_tickets_by_user(user_id):
     if not user:
         raise ValueError("User not found")
 
-    tickets = Ticket.query.filter_by(userID=user_id, is_delete=False).all()
+    tickets = Ticket.query.filter_by(userID=user_id, is_delete=False).order_by(Ticket.dateOrder.desc(), Ticket.timeOrder.desc()).all()
     return tickets
 
 
@@ -73,3 +74,49 @@ def delete_ticket(ticket_id):
     db.session.commit()
     create_or_update_total_day(-ticket.price, ticket.dateOrder, ticket.dateOrder.month, ticket.dateOrder.year)
     return {"message": "Ticket deleted successfully"}, 200
+
+
+
+'''
+cần trả về thông tin chi tiết của vé bao gồm:
+- id vé, ngày đặt,  mã phòng, giá vé
+- thông tin buổi chiếu (ID, thời gian, ngày chiếu, giờ chiếu)
+- tên phim, thumbnail, runtime
+
+'''
+
+def get_ticket_detail_by_id(ticket_id):
+    """Retrieve detailed information about a ticket by its ID."""
+    try:
+        res = {}
+        ticket = Ticket.query.filter_by(ID=ticket_id, is_delete=False).first()
+        if not ticket:
+            raise ValueError("Ticket not found")
+        
+        broadcast = get_broadcast_by_id(ticket.BroadcastID)
+        firm = broadcast.firm if broadcast else None
+        if not firm:
+            raise ValueError("Firm not found")
+        
+        if not broadcast or not ticket.SeatID:
+            raise ValueError("Broadcast or Seat not found")
+        
+        res['ID'] = ticket.ID
+        res['DateOrder'] = str(ticket.dateOrder)
+        res['TimeOrder'] = str(ticket.timeOrder)
+        res['RoomID'] = broadcast.RoomID
+        
+        res['Price'] = ticket.price
+        res['Broadcast'] = {
+            'ID': broadcast.ID,
+            'TimeBroadcast': str(broadcast.timeBroadcast),
+            'DateBroadcast': str(broadcast.dateBroadcast),
+            'FirmID': broadcast.FirmID,
+            'FirmName': firm.name,
+            'Thumbnail': firm.thumbnail_path,
+            'Runtime': firm.runtime
+        }
+        res['SeatID'] = ticket.SeatID
+        return res
+    except Exception as e:
+        raise ValueError(f"Error retrieving ticket detail: {str(e)}")

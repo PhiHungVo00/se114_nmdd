@@ -47,6 +47,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Tên đăng nhập"
+            android:textColor="@color/primary_text"
+            android:backgroundTint="@color/primary_text"
             android:textColorHint="@color/secondary_text" />
 
         <EditText
@@ -54,6 +56,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
+            android:textColor="@color/primary_text"
+            android:backgroundTint="@color/primary_text"
             android:hint="Mật khẩu"
             android:inputType="textPassword"
             android:textColorHint="@color/secondary_text" />
@@ -63,16 +67,20 @@
             android:id="@+id/etFullName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/primary_text"
             android:layout_marginTop="12dp"
             android:hint="Họ và tên"
+            android:textColor="@color/primary_text"
             android:textColorHint="@color/secondary_text" />
 
         <EditText
             android:id="@+id/etEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/primary_text"
             android:layout_marginTop="12dp"
             android:hint="Email"
+            android:textColor="@color/primary_text"
             android:textColorHint="@color/secondary_text" />
 
         <EditText
@@ -81,6 +89,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:hint="Số điện thoại"
+            android:textColor="@color/primary_text"
+            android:backgroundTint="@color/primary_text"
             android:textColorHint="@color/secondary_text" />
 
         <Button

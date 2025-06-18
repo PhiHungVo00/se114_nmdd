@@ -2,6 +2,7 @@ package com.example.myapplication.network;
 
 import com.example.myapplication.models.LoginRequest;
 import com.example.myapplication.models.LoginResponse;
+import com.example.myapplication.models.RegisterReponse;
 import com.example.myapplication.models.RegisterRequest;
 
 import retrofit2.Call;
@@ -15,5 +16,5 @@ public interface ApiAuthService {
 
 
     @POST("auth/register")
-    Call<String> register(@Body RegisterRequest registerRequest);
+    Call<RegisterReponse> register(@Body RegisterRequest registerRequest);
 }

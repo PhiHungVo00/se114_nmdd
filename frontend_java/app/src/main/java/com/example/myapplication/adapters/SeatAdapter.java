@@ -27,6 +27,10 @@ public class SeatAdapter extends RecyclerView.Adapter<SeatAdapter.SeatViewHolder
     }
 
 
+    public Seat getSelectedSeat() {
+        return selectedSeat;
+    }
+
     @NonNull
     @Override
     public SeatViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -40,19 +44,13 @@ public class SeatAdapter extends RecyclerView.Adapter<SeatAdapter.SeatViewHolder
 
         holder.seatName.setText(seat.getName());
 
-//        Log.e("is bought", String.valueOf(seat.isBought()));
-        Log.e("is selected", String.valueOf(seat.isSelected()));
-
         // Set background theo trạng thái
         if (seat.isBought()) {
-            Log.e("is selected", String.valueOf(seat.isBought()));
             holder.imageSeat.setBackgroundResource(R.drawable.bg_seat_bought);
         } else if (seat.equals(selectedSeat)) {
             holder.imageSeat.setBackgroundResource(R.drawable.bg_seat_selected);
-            Log.e("is selected", String.valueOf(seat.isSelected()));
         } else {
             holder.imageSeat.setBackgroundResource(R.drawable.bg_seat_default);
-            Log.e("is selected", String.valueOf(seat.isSelected()));
         }
 
         // Xử lý chọn ghế

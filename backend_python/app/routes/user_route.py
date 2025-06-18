@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from flask_jwt_extended import jwt_required
 from app.services.user_service import (
     get_all_users,
     get_user_by_id,
@@ -27,6 +28,7 @@ def get_users():
 # get user by id
 # link: localhost:5000/api/users/get/<user_id>
 @USER_BLUEPRINT.route('/get/<int:user_id>', methods=['GET'])
+@jwt_required()
 def get_user(user_id):
     """Retrieve a user by their ID."""
     try:
