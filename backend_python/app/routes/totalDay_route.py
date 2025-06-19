@@ -23,7 +23,7 @@ def refresh_total_day_route():
         return jsonify({'message': 'Day, month, and year are required'}), 400
     try:
         result = refresh_total_day(day, month, year)
-        return jsonify(result), 200
+        return jsonify({'message': 'Total day data refreshed successfully.'}), 200
     except ValueError as e:
         return jsonify({'message': str(e)}), 400
     except Exception as e:

@@ -22,6 +22,8 @@ public class BookingTicketResponse implements Parcelable {
     @SerializedName("Broadcast")
     private Broadcast Broadcast;
 
+    @SerializedName("UserID")
+    private int UserID; // Assuming this field exists based on the context
     protected BookingTicketResponse(Parcel in) {
         ID = in.readInt();
         DateOrder = in.readString();
@@ -30,6 +32,7 @@ public class BookingTicketResponse implements Parcelable {
         RoomID = in.readInt();
         SeatID = in.readInt();
         Broadcast = in.readParcelable(Broadcast.class.getClassLoader());
+        UserID = in.readInt(); // Read UserID if it exists
     }
 
     public static final Creator<BookingTicketResponse> CREATOR = new Creator<BookingTicketResponse>() {
@@ -53,6 +56,7 @@ public class BookingTicketResponse implements Parcelable {
         dest.writeInt(RoomID);
         dest.writeInt(SeatID);
         dest.writeParcelable(Broadcast, flags);
+        dest.writeInt(UserID); // Write UserID if it exists
     }
 
     @Override
@@ -63,6 +67,9 @@ public class BookingTicketResponse implements Parcelable {
     // Getters
     public int getID() {
         return ID;
+    }
+    public int getUserID() {
+        return UserID; // Assuming this field exists based on the context
     }
     public String getDateOrder() {
         return DateOrder;

@@ -1,11 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/primary_bg"
-    android:fitsSystemWindows="true">
+    android:animateLayoutChanges="true"
+    android:fitsSystemWindows="true"
+    android:background="@color/primary_bg">
 
 
     <LinearLayout
@@ -15,9 +17,7 @@
         android:background="@color/colorPrimaryDark"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="@dimen/_6sdp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:padding="@dimen/_8sdp"
         app:layout_constraintTop_toTopOf="parent">
 
 
@@ -36,64 +36,13 @@
             android:text="  CineStream"
             android:textColor="@color/colorTextIcons"
             android:textSize="@dimen/_14sdp"
-            android:visibility="visible"
             app:drawableStartCompat="@drawable/ic_movie"
             app:drawableTint="@color/colorTextIcons" />
 
 
-        <ImageView
-            android:id="@+id/imageHistory"
-            android:layout_width="@dimen/_24sdp"
-            android:layout_height="@dimen/_24sdp"
-            android:layout_marginEnd="@dimen/_8sdp"
-            android:contentDescription="@string/app_name"
-            android:padding="@dimen/_2sdp"
-            android:src="@drawable/ic_history"
-            app:tint="@color/colorTextIcons" />
 
     </LinearLayout>
 
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/_490sdp"
-
-        android:layout_marginTop="12dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinnerWeek"
-        tools:ignore="MissingConstraints">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            tools:ignore="MissingConstraints">
-
-            <com.github.mikephil.charting.charts.BarChart
-                android:id="@+id/barChart"
-                android:layout_width="match_parent"
-                android:layout_height="500dp" /> <!-- Đặt rõ chiều cao -->
-
-        </LinearLayout>
-    </ScrollView>
-
-    <Spinner
-        android:id="@+id/spinnerWeek"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:backgroundTint="#081C56"
-        android:popupBackground="#223375"
-        android:scrollbarSize="@dimen/_10sdp"
-        app:circularflow_defaultRadius="@dimen/_5sdp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layoutHeader"
-        tools:ignore="MissingConstraints" />
 
     <LinearLayout
         android:id="@+id/layoutMenu"
@@ -153,4 +102,6 @@
             app:tint="#888888" />
 
     </LinearLayout>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

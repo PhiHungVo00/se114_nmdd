@@ -173,9 +173,11 @@ public class UserMainActivity extends AppCompatActivity {
     private void searchFirms(String query) {
         Log.d("SearchFirms", "Searching for: " + query);
         List<FirmShow> filteredList = new ArrayList<>();
-        for (FirmShow firm : cacheFirmShows) {
-            if (firm.getName().toLowerCase().contains(query.toLowerCase())) {
-                filteredList.add(firm);
+        if(cacheFirmShows != null) {
+            for (FirmShow firm : cacheFirmShows) {
+                if (firm.getName().toLowerCase().contains(query.toLowerCase())) {
+                    filteredList.add(firm);
+                }
             }
         }
 

@@ -6,14 +6,12 @@ from app.utils.helper import format_date, format_time, format_datetime
 from datetime import timedelta, datetime
 from sqlalchemy import and_
 
-
-
-# check không cho broadcast trùng thời gian của room trong khoảng thời gian 2h 
+# check không cho broadcast trùng thời gian của room trong khoảng thời gian 3h
 def is_broadcast_time_conflict(room_id, time_broadcast, date_broadcast):
     """Check if the broadcast time conflicts with existing broadcasts in the room."""
     current_time = datetime.combine(date_broadcast, time_broadcast)
     start_time = current_time
-    end_time = current_time + timedelta(hours=2)
+    end_time = current_time + timedelta(hours=3)
     existing_broadcasts = Broadcast.query.filter(
         Broadcast.RoomID == room_id,
         Broadcast.is_delete == False,

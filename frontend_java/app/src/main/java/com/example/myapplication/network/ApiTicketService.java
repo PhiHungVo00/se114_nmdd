@@ -8,6 +8,7 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
@@ -27,6 +28,15 @@ public interface ApiTicketService {
     Call<BookingTicketResponse> getTicketDetail(@Header("Authorization") String token,
                                               @Path("ticketId") String ticketId);
 
+
+
+    @GET("tickets/get_all")
+    Call<List<Ticket>> getAllTickets(@Header("Authorization") String token);
+
+
+    @DELETE("tickets/delete/{ticketId}")
+    Call<String> deleteTicket(@Header("Authorization") String token,
+                            @Path("ticketId") String ticketId);
 
 
 }

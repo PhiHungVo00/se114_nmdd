@@ -7,10 +7,10 @@ from .totalDayly_service import create_or_update_total_day
 from datetime import datetime
 from .broadcast_service import get_broadcast_by_id
 from sqlalchemy import and_
-from .seat_service import get_seat_available, set_seat_bought
+from .seat_service import get_seat_available, set_seat_bought, set_seat_available
 
 
-def create_ticket(user_id, broadcast_id, seat_id):
+def create_ticket_service(user_id, broadcast_id, seat_id):
     try:
         broadcast = get_broadcast_by_id(broadcast_id)
         if not broadcast:
@@ -31,12 +31,12 @@ def create_ticket(user_id, broadcast_id, seat_id):
         # Set the seat as bought
         set_seat_bought(seat_id)
         create_or_update_total_day(price, ticket.dateOrder.day, ticket.dateOrder.month, ticket.dateOrder.year)
-        return get_ticket_detail_by_id(ticket.ID)
+        return get_ticket_detail_by_id_service(ticket.ID)
     except Exception as e:
         db.session.rollback()
         raise ValueError(f"Error creating ticket: {str(e)}")
 
-def get_ticket_by_id(ticket_id):
+def get_ticket_by_id_service(ticket_id):
     """Retrieve a ticket by its ID."""
     ticket = Ticket.query.filter_by(ID=ticket_id, is_delete=False).first()
     if not ticket:
@@ -45,14 +45,14 @@ def get_ticket_by_id(ticket_id):
 
 
 
-def get_all_tickets():
+def get_all_tickets_service():
     """Retrieve all tickets."""
-    tickets = Ticket.query.filter_by(is_delete=False).all()
+    tickets = Ticket.query.filter_by(is_delete=False).order_by(Ticket.dateOrder.desc(), Ticket.timeOrder.desc()).all()
     return tickets
 
 
 
-def get_tickets_by_user(user_id):
+def get_tickets_by_user_service(user_id):
     """Retrieve all tickets for a specific user."""
     user = User.query.filter_by(ID=user_id, is_delete=False).first()
     if not user:
@@ -64,17 +64,21 @@ def get_tickets_by_user(user_id):
 
 
 
-def delete_ticket(ticket_id):
+def delete_ticket_service(ticket_id):
     """Soft delete a ticket by setting is_delete to True."""
-    ticket = Ticket.query.filter_by(ID=ticket_id, is_delete=False).first()
-    if not ticket:
-        return {"message": "Ticket not found"}, 404
-    
-    ticket.is_delete = True
-    db.session.commit()
-    create_or_update_total_day(-ticket.price, ticket.dateOrder, ticket.dateOrder.month, ticket.dateOrder.year)
-    return {"message": "Ticket deleted successfully"}, 200
-
+    try:
+        ticket = Ticket.query.filter_by(ID=ticket_id, is_delete=False).first()
+        if not ticket:
+            return {"message": "Ticket not found"}, 404
+        
+        ticket.is_delete = True
+        db.session.commit()
+        create_or_update_total_day(-ticket.price, ticket.dateOrder.day, ticket.dateOrder.month, ticket.dateOrder.year)
+        set_seat_available(ticket.SeatID)
+        return {"message": "Ticket deleted successfully"}, 200
+    except Exception as e:
+        db.session.rollback()
+        raise ValueError(f"Error deleting ticket: {str(e)}")
 
 
 '''
@@ -85,7 +89,7 @@ cần trả về thông tin chi tiết của vé bao gồm:
 
 '''
 
-def get_ticket_detail_by_id(ticket_id):
+def get_ticket_detail_by_id_service(ticket_id):
     """Retrieve detailed information about a ticket by its ID."""
     try:
         res = {}
@@ -105,7 +109,7 @@ def get_ticket_detail_by_id(ticket_id):
         res['DateOrder'] = str(ticket.dateOrder)
         res['TimeOrder'] = str(ticket.timeOrder)
         res['RoomID'] = broadcast.RoomID
-        
+        res['UserID'] = ticket.userID
         res['Price'] = ticket.price
         res['Broadcast'] = {
             'ID': broadcast.ID,
