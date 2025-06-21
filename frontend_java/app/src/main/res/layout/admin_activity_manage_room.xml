@@ -45,26 +45,15 @@
 
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/historyTicketBookedRecyclerView"
+        android:id="@+id/roomShowsRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:clipToPadding="false"
-        android:orientation="vertical"
-        android:paddingStart="@dimen/_4sdp"
-        android:paddingTop="@dimen/_4sdp"
-        android:paddingEnd="@dimen/_4sdp"
-        android:paddingBottom="@dimen/_44sdp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/layoutHeader1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layoutHeader"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintBottom_toTopOf="@+id/layoutMenu"
+        app:layout_constraintTop_toBottomOf="@+id/layoutHeader"
+        tools:layout_editor_absoluteX="0dp" />
 
     <LinearLayout
-        android:id="@+id/layoutHeader1"
+        android:id="@+id/layoutMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimaryDark"
@@ -76,27 +65,43 @@
         <ImageView
             android:id="@+id/imageHome"
             android:layout_width="0dp"
-            android:layout_height="@dimen/_30sdp"
+            android:layout_height="@dimen/_32sdp"
             android:layout_weight="1"
-            android:contentDescription="@string/app_name"
             android:padding="@dimen/_2sdp"
             android:src="@drawable/ic_home"
             app:tint="#888888" />
 
-
         <ImageView
-            android:id="@+id/imageHistory"
+            android:id="@+id/imageManageFirm"
             android:layout_width="0dp"
-            android:layout_height="@dimen/_30sdp"
+            android:layout_height="@dimen/_32sdp"
             android:layout_weight="1"
-            android:src="@drawable/ic_history"
-            app:tint="@color/colorTextIcons"/>
+            android:padding="@dimen/_2sdp"
+            android:src="@drawable/ic_manage_firm"
+            app:tint="#888888" />
+
+        <ImageView
+            android:id="@+id/imageManageRoom"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_32sdp"
+            android:layout_weight="1"
+            android:padding="@dimen/_2sdp"
+            android:src="@drawable/ic_manage_room"
+            app:tint="@color/colorTextIcons" />
+
+        <ImageView
+            android:id="@+id/imageManageUser"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_32sdp"
+            android:layout_weight="1"
+            android:src="@drawable/ic_manage_user"
+            app:tint="#888888"/>
 
 
         <ImageView
-            android:id="@+id/imageUser"
+            android:id="@+id/imageProfile"
             android:layout_width="0dp"
-            android:layout_height="@dimen/_30sdp"
+            android:layout_height="@dimen/_32sdp"
             android:layout_marginEnd="@dimen/_8sdp"
             android:contentDescription="@string/app_name"
             android:layout_weight="1"
@@ -105,8 +110,6 @@
             app:tint="#888888" />
 
     </LinearLayout>
-
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

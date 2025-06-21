@@ -22,7 +22,7 @@ class TotalDay(db.Model):
         return {
             'ID': self.ID,
             'TotalMoney': self.totalMoney,
-            'Date': self.date.isoformat() if self.date else None,
+            'Date': self.date,
             'Month': self.month,
             'Year': self.year
         }

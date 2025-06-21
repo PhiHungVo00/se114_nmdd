@@ -19,6 +19,5 @@ class Room(db.Model):
         return {
             'ID': self.ID,
             'Name': self.name,
-            'Seats': self.seats,
-            'IsDeleted': self.is_delete
+            'Seats': self.seats
         }

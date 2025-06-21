@@ -2,7 +2,7 @@ from app import db
 from app.models.TotalDay import TotalDay
 from app.models.Ticket import Ticket
 from datetime import datetime
-from sqlalchemy import extract
+from sqlalchemy import extract, func
 
 
 def create_or_update_total_day(total_money, day, month, year):
@@ -53,3 +53,32 @@ def refresh_total_day(day=None, month=None, year=None):
     except Exception as e:
         db.session.rollback()
         raise ValueError(f"Error refreshing TotalDay: {str(e)}")
+    
+
+def get_total_day_by_date(day, month, year):
+    """
+    Retrieve the total day record for a specific date.
+    """
+    return TotalDay.query.filter_by(date=day, month=month, year=year).first()
+
+
+
+def get_more_total_days(start_date, end_date):
+    """
+    Retrieve all total day records.
+    """
+    date_expr = func.str_to_date(
+        func.concat(
+            TotalDay.year, '-',
+            func.lpad(TotalDay.month, 2, '0'), '-',
+            func.lpad(TotalDay.date, 2, '0')
+        ),
+        '%Y-%m-%d'
+    )
+    return TotalDay.query.filter(
+        date_expr >= start_date,
+        date_expr <= end_date
+    ).order_by(TotalDay.year, TotalDay.month, TotalDay.date).all()
+
+
+

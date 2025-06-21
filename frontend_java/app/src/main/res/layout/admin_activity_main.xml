@@ -1,13 +1,13 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/primary_bg"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
 
-
+    <!-- Header -->
     <LinearLayout
         android:id="@+id/layoutHeader"
         android:layout_width="match_parent"
@@ -16,30 +16,24 @@
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:padding="@dimen/_6sdp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
+        app:layout_constraintEnd_toEndOf="parent">
 
         <TextView
             android:id="@+id/textAppName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_8sdp"
-            android:layout_marginEnd="@dimen/_8sdp"
             android:layout_weight="1"
             android:ellipsize="end"
             android:fontFamily="@font/ubuntu_bold"
             android:gravity="center_vertical"
-            android:includeFontPadding="false"
             android:maxLines="1"
             android:text="  CineStream"
             android:textColor="@color/colorTextIcons"
             android:textSize="@dimen/_14sdp"
-            android:visibility="visible"
             app:drawableStartCompat="@drawable/ic_movie"
             app:drawableTint="@color/colorTextIcons" />
-
 
         <ImageView
             android:id="@+id/imageHistory"
@@ -50,51 +44,97 @@
             android:padding="@dimen/_2sdp"
             android:src="@drawable/ic_history"
             app:tint="@color/colorTextIcons" />
-
     </LinearLayout>
 
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/_490sdp"
-
-        android:layout_marginTop="12dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-
+    <!-- Tổng doanh thu hôm nay + nút refresh -->
+    <LinearLayout
+        android:id="@+id/layoutRevenueHeader"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/_100sdp"
+        android:layout_marginTop="@dimen/_12sdp"
+        android:padding="@dimen/_8sdp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/layoutHeader"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinnerWeek"
-        tools:ignore="MissingConstraints">
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:fontFamily="@font/ubuntu_regular"
+                android:textSize="@dimen/_14sdp"
+                android:layout_weight="1"
+                android:text="Doanh Thu Ngày"
+                android:textColor="@color/primary_text"/>
+
+            <TextView
+                android:id="@+id/tvRevenueToday"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="2"
+                android:text="500000 VNĐ"
+                android:fontFamily="@font/ubuntu_bold"
+                android:textSize="@dimen/_32sdp"
+                android:textColor="#12C81E"/>
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/imageRefresh"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginStart="@dimen/_8sdp"
+            android:contentDescription="Refresh"
+            android:src="@drawable/ic_refresh"
+            app:tint="@color/colorTextIcons" />
+    </LinearLayout>
+
+    <!-- Biểu đồ -->
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="@dimen/_400sdp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toTopOf="@+id/layoutMenu"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/layoutRevenueHeader">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            tools:ignore="MissingConstraints">
+            android:paddingBottom="@dimen/_16sdp">
 
-            <com.github.mikephil.charting.charts.BarChart
-                android:id="@+id/barChart"
+            <!-- Chú thích doanh thu từ ngày đến ngày -->
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/lineChart"
                 android:layout_width="match_parent"
-                android:layout_height="500dp" /> <!-- Đặt rõ chiều cao -->
+                android:layout_height="450dp"
+                android:layout_marginBottom="@dimen/_8sdp" />
 
+            <TextView
+                android:id="@+id/tvDateRange"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/ubuntu_regular"
+                android:gravity="center"
+                android:padding="@dimen/_8sdp"
+                android:textSize="@dimen/_13sdp"
+                android:text="Doanh thu từ 12/06 đến 18/06"
+                android:textColor="@color/colorTextIcons" />
         </LinearLayout>
     </ScrollView>
 
-    <Spinner
-        android:id="@+id/spinnerWeek"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:backgroundTint="#081C56"
-        android:popupBackground="#223375"
-        android:scrollbarSize="@dimen/_10sdp"
-        app:circularflow_defaultRadius="@dimen/_5sdp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layoutHeader"
-        tools:ignore="MissingConstraints" />
-
+    <!-- Menu dưới cùng -->
     <LinearLayout
         android:id="@+id/layoutMenu"
         android:layout_width="match_parent"
@@ -110,7 +150,6 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/_32sdp"
             android:layout_weight="1"
-            android:padding="@dimen/_2sdp"
             android:src="@drawable/ic_home"
             app:tint="@color/colorTextIcons" />
 
@@ -119,7 +158,6 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/_32sdp"
             android:layout_weight="1"
-            android:padding="@dimen/_2sdp"
             android:src="@drawable/ic_manage_firm"
             app:tint="#888888" />
 
@@ -128,7 +166,6 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/_32sdp"
             android:layout_weight="1"
-            android:padding="@dimen/_2sdp"
             android:src="@drawable/ic_manage_room"
             app:tint="#888888" />
 
@@ -138,19 +175,15 @@
             android:layout_height="@dimen/_32sdp"
             android:layout_weight="1"
             android:src="@drawable/ic_manage_user"
-            app:tint="#888888"/>
-
+            app:tint="#888888" />
 
         <ImageView
             android:id="@+id/imageProfile"
             android:layout_width="0dp"
             android:layout_height="@dimen/_32sdp"
-            android:layout_marginEnd="@dimen/_8sdp"
-            android:contentDescription="@string/app_name"
             android:layout_weight="1"
-            android:padding="@dimen/_2sdp"
             android:src="@drawable/ic_user"
             app:tint="#888888" />
-
     </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

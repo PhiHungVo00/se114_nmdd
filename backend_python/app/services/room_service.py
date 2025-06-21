@@ -26,7 +26,7 @@ def update_room(room_id, name=None, seats=None):
     room = get_room_by_id(room_id)
     if not room:
         raise ValueError("Room not found")
-    if name and Room.query.filter_by(name=name, is_delete=False).first():
+    if Room.query.filter(Room.ID != room_id, Room.name == name, Room.is_delete == False).first():
         raise ValueError("Room with this name already exists")
 
     if name:

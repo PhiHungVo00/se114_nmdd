@@ -69,6 +69,12 @@
         <activity
             android:name=".activities.AdminActivityHistoryBooking"
             android:exported="false" />
+        <activity
+            android:name=".activities.AdminActivityManageRoom"
+            android:exported="false" />
+        <activity
+            android:name=".activities.AdminActivityEditRoom"
+            android:exported="false" />
 
 
     </application>

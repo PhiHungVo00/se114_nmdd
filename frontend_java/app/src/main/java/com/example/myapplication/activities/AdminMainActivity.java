@@ -2,18 +2,30 @@ package com.example.myapplication.activities;
 
 import static android.graphics.Color.*;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.myapplication.R;
+import com.example.myapplication.helper.CustomMarkerView;
+import com.example.myapplication.models.RevenueDay;
+
+import com.example.myapplication.models.StatusMessage;
+import com.example.myapplication.models.UserInfo;
+import com.example.myapplication.network.ApiClient;
+import com.example.myapplication.network.ApiRevenueService;
+import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
@@ -21,23 +33,43 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.google.gson.annotations.SerializedName;
 
+import java.io.IOException;
+import java.sql.DataTruncation;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
+
+import retrofit2.Call;
+import retrofit2.Callback;
 
 public class AdminMainActivity extends AppCompatActivity {
+    String accessToken;
+    LocalDate today = LocalDate.now();
+    LocalDate oneWeekAgo = today.minusDays(6);
+
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    List<RevenueDay> revenueDays = new ArrayList<>();
+
     private Map<String, List<Float>> weeklyRevenue = new HashMap<>();
-    BarChart barChart;
-    Spinner spinnerWeek;
-    ImageView imageHistory, imageHome, imageManageUser, imageManageFirm, imageProfile;
+    LineChart lineChart;
+    TextView tvRevenueToday, tvDateRange;
+    ImageView imageHistory, imageHome, imageManageUser, imageManageFirm, imageProfile, imageRefresh, imageManageRoom;
+
 
 
     @Override
@@ -47,36 +79,16 @@ public class AdminMainActivity extends AppCompatActivity {
 //        findViewById
         setFindIdElement();
 
+//        Set access token from SharedPreferences
+        accessToken = getSharedPreferences("MyAppPrefs", MODE_PRIVATE).getString("access_token", null);
 
-//        set up and show graph
-
-        setupSampleData();
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.item_spinner,
-                new ArrayList<>(weeklyRevenue.keySet()));
-        adapter.setDropDownViewResource(R.layout.item_spinner);
-        spinnerWeek.setAdapter(adapter);
-        spinnerWeek.setBackgroundColor(Color.parseColor("#081000"));
-
-
-        spinnerWeek.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selectedWeek = parent.getItemAtPosition(position).toString();
-                showBarChart(weeklyRevenue.get(selectedWeek));
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) { }
-        });
-
-        // Hiển thị tuần đầu tiên mặc định
-        spinnerWeek.setSelection(0);
-
+        // load     api revenue
+        loadApiRevenueOneweekLastest();
 
 
         // listen menu button
         listenerSetupMenuButton();
+
 
     }
 
@@ -93,6 +105,20 @@ public class AdminMainActivity extends AppCompatActivity {
                 }
         );
 
+        imageRefresh.setOnClickListener(
+                v -> {
+                    refreshRevenueDay();
+                }
+        );
+
+        imageManageRoom.setOnClickListener(
+                v -> {
+                    startActivity(new android.content.Intent(AdminMainActivity.this, AdminActivityManageRoom.class));
+                }
+        );
+
+
+
     }
 
     void setFindIdElement() {
@@ -101,81 +127,151 @@ public class AdminMainActivity extends AppCompatActivity {
         imageManageFirm = findViewById(R.id.imageManageFirm);
         imageManageUser = findViewById(R.id.imageManageUser);
         imageProfile = findViewById(R.id.imageProfile);
-        spinnerWeek = findViewById(R.id.spinnerWeek);
-        barChart = findViewById(R.id.barChart);
+        lineChart = findViewById(R.id.lineChart);
+        tvRevenueToday = findViewById(R.id.tvRevenueToday);
+        tvDateRange = findViewById(R.id.tvDateRange);
+        imageRefresh = findViewById(R.id.imageRefresh);
+        imageManageRoom = findViewById(R.id.imageManageRoom);
     }
 
 
 
 
-    private void setupSampleData() {
-        // Giả lập dữ liệu cho 4 tuần
-        weeklyRevenue.put("Tuần 1", Arrays.asList(10f, 15f, 12f, 20f, 25f, 18f, 16f));
-        weeklyRevenue.put("Tuần 2", Arrays.asList(14f, 11f, 13f, 22f, 26f, 19f, 17f));
-        weeklyRevenue.put("Tuần 3", Arrays.asList(8f, 10f, 9f, 15f, 20f, 16f, 14f));
-        weeklyRevenue.put("Tuần 4", Arrays.asList(12f, 18f, 14f, 19f, 21f, 22f, 23f));
+
+
+
+
+    void loadApiRevenueOneweekLastest(){
+        String token = "Bearer " + accessToken;
+        String todayStr = today.format(formatter);
+        String oneWeekAgoStr = oneWeekAgo.format(formatter);
+
+        ApiRevenueService apiRevenueService = ApiClient.getRetrofit().create(ApiRevenueService.class);
+        Call<List<RevenueDay>> call = apiRevenueService.getMoreTotalDays(token, oneWeekAgoStr, todayStr);
+        call.enqueue(new retrofit2.Callback<List<RevenueDay>>() {
+
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onResponse(Call<List<RevenueDay>> call, retrofit2.Response<List<RevenueDay>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Log.d("API_RESPONSE", "Revenue days loaded successfully: " + response.body());
+
+                    // Clear previous data
+                    revenueDays.clear();
+                    List <String> weekLabels = new ArrayList<>();
+                    // Process the response data
+                    for (RevenueDay revenueDay : response.body()) {
+                        Log.d("Date", "RevenueDay: " + revenueDay.getDate() + ", Total: " + revenueDay.getTotalMoney());
+                    }
+                    // Add new data
+                    revenueDays.addAll(response.body());
+                    // Update the TextView with today's revenue
+
+                    tvRevenueToday.setText(String.valueOf(revenueDays.get(6).getTotalMoney()) + " VNĐ");
+                    // Update the date range TextView
+                    tvDateRange.setText("Doanh thu từ "  + revenueDays.get(0).getDate() + "/" + revenueDays.get(0).getMonth() +" đến "+ revenueDays.get(6).getDate() + "/" + revenueDays.get(6).getMonth());
+                    showLineChart();
+                } else {
+                    Log.e("API_ERROR", "Response error: " + response.code());
+                    // Handle the case where the response is not successful
+                    Log.e("API_ERROR", "Failed to load revenue days: " + response.message());
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<List<RevenueDay>> call, Throwable t) {
+
+            }
+        });
     }
 
+    private void showLineChart() {
+        List<Entry> entries = new ArrayList<>();
+        List<String> xLabels = new ArrayList<>();
 
-    private void showBarChart(List<Float> revenueList) {
-        List<BarEntry> entries = new ArrayList<>();
-
-        for (int i = 0; i < revenueList.size(); i++) {
-            entries.add(new BarEntry(i, revenueList.get(i)));
+        for (int i = 0; i < revenueDays.size(); i++) {
+            entries.add(new Entry(i, revenueDays.get(i).getTotalMoney()));
+            xLabels.add(String.valueOf(revenueDays.get(i).getDate()));
         }
 
-        BarDataSet dataSet = new BarDataSet(entries, "Doanh thu theo ngày");
-        dataSet.setColors(ColorTemplate.MATERIAL_COLORS); // Hoặc dùng setColor(Color.GREEN), vv
-        dataSet.setValueTextColor(Color.WHITE);
-        dataSet.setValueTextSize(14f); // 👈 tăng size chữ giá trị trên cột
+        LineDataSet dataSet = new LineDataSet(entries, "");
+        dataSet.setColor(Color.CYAN);
+        dataSet.setLineWidth(3f);
+        dataSet.setCircleColor(Color.WHITE);
+        dataSet.setCircleRadius(6f);
+        dataSet.setCircleHoleRadius(4f);
+        dataSet.setCircleHoleColor(Color.CYAN);
+        dataSet.setDrawValues(false);  // Tắt số hiển thị trên line
+        dataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
+        // Tắt tooltip khi chạm
+        lineChart.setMarker(null);
 
-        BarData barData = new BarData(dataSet);
-        barData.setBarWidth(0.6f); // 👈 chỉnh độ rộng cột
-        barChart.setData(barData);
-
-        String[] days = {"T2", "T3", "T4", "T5", "T6", "T7", "CN"};
+        // Trục Y
+        lineChart.getAxisLeft().setEnabled(false);
+        lineChart.getAxisRight().setEnabled(false);
 
         // Trục X
-        XAxis xAxis = barChart.getXAxis();
-        xAxis.setValueFormatter(new IndexAxisValueFormatter(days));
-        xAxis.setTextColor(Color.WHITE);
-        xAxis.setTextSize(16f); // 👈 tăng size
+        XAxis xAxis = lineChart.getXAxis();
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(xLabels));
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setDrawGridLines(false);
+        xAxis.setTextColor(Color.WHITE);
+        xAxis.setTextSize(15f);
         xAxis.setGranularity(1f);
-        xAxis.setLabelCount(days.length);
-        xAxis.setYOffset(10f); // 👈 tăng khoảng cách text và trục
+        xAxis.setLabelCount(xLabels.size());
+        xAxis.setDrawGridLines(false);
+        xAxis.setLabelRotationAngle(0f);
+        xAxis.setSpaceMin(0.5f);
+        xAxis.setSpaceMax(0.5f);
 
-        // Trục Y trái
-        YAxis leftAxis = barChart.getAxisLeft();
-        leftAxis.setTextColor(Color.WHITE);
-        leftAxis.setTextSize(16f); // 👈 tăng size
-        leftAxis.setAxisMinimum(0f); // 👈 đảm bảo trục bắt đầu từ 0
-        leftAxis.setGranularity(3f); // 👈 chia lưới đẹp hơn
-        leftAxis.setGridColor(Color.DKGRAY); // 👈 màu lưới
+        // Tắt legend & description
+        lineChart.getLegend().setEnabled(false);
+        lineChart.getDescription().setEnabled(false);
 
-        // Trục Y phải
-        YAxis rightAxis = barChart.getAxisRight();
-        rightAxis.setEnabled(false); // 👈 tắt nếu không cần thiết
+        // Background và animation
+        lineChart.setBackgroundColor(Color.parseColor("#081029"));
+        lineChart.setExtraOffsets(20f, 20f, 20f, 30f);
+        lineChart.animateX(1200, Easing.EaseInOutCubic);
 
-            // Legend
-            Legend legend = barChart.getLegend();
-            legend.setTextColor(Color.WHITE);
-            legend.setTextSize(20f); // 👈 tăng size
-            legend.setDrawInside(false);
-            legend.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
-    //        legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
-            legend.setOrientation(Legend.LegendOrientation.HORIZONTAL);
 
-            // General settings
-            barChart.setBackgroundColor(Color.parseColor("#081029"));
-            barChart.getDescription().setEnabled(false);
-            barChart.setExtraOffsets(10f, 10f, 10f, 60f);
-            barChart.setExtraBottomOffset(40f);
-            barChart.animateY(1000);
-            barChart.invalidate();
+        // Gán marker view khi chạm vào điểm
+        CustomMarkerView markerView = new CustomMarkerView(this, R.layout.custom_marker_view);
+        lineChart.setMarker(markerView);
+
+        // Set data & vẽ
+        LineData lineData = new LineData(dataSet);
+        lineChart.setData(lineData);
+        lineChart.invalidate();
     }
 
+
+
+    private  void  refreshRevenueDay(){
+        String token = "Bearer " + accessToken;
+        String day = String.valueOf(today.getDayOfMonth());
+        String month = String.valueOf(today.getMonthValue());
+        String year = String.valueOf(today.getYear());
+        ApiRevenueService apiRevenueService = ApiClient.getRetrofit().create(ApiRevenueService.class);
+        Call<StatusMessage> call = apiRevenueService.refreshTotalDay(token, day, month, year);
+        call.enqueue(new Callback<StatusMessage>() {
+            @Override
+            public void onResponse(Call<StatusMessage> call, retrofit2.Response<StatusMessage> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Log.d("API_RESPONSE", "Refresh revenue day successful: " + response.code());
+                    // Cập nhật lại dữ liệu doanh thu hôm nay
+                    loadApiRevenueOneweekLastest();
+                } else {
+                    Log.e("API_ERROR", "Failed to refresh revenue day: " + response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<StatusMessage> call, Throwable t) {
+                Log.e("API_ERROR", "Error refreshing revenue day: " + t.getMessage());
+            }
+        });
+
+    }
 
 
 }

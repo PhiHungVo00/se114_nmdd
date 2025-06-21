@@ -3,6 +3,8 @@ package com.example.myapplication.network;
 import com.example.myapplication.models.UserInfo;
 import com.example.myapplication.models.UserUpdateRequest;
 
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -14,6 +16,12 @@ public interface ApiUserService {
     @GET("users/get/{userId}")
     Call<UserInfo> getUserById(@Header("Authorization") String token, @Path("userId") String userId);
 
+    @GET("users/get_all")
+    Call<List<UserInfo>> getAllUsers(@Header("Authorization") String token);
+
     @PUT("users/update/{userId}")
     Call<UserInfo> updateUser(@Header("Authorization") String token, @Path("userId") String userId, @Body UserUpdateRequest userUpdateRequest);
+
+
+
 }

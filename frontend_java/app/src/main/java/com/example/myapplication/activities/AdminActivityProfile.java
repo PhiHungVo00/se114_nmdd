@@ -212,5 +212,12 @@ public class AdminActivityProfile extends AppCompatActivity {
             Intent intent = new Intent(AdminActivityProfile.this, AdminMainActivity.class);
             startActivity(intent);
         });
+
+        imageManageRoom.setOnClickListener(
+                v -> {
+                    Intent intent = new Intent(AdminActivityProfile.this, AdminActivityManageRoom.class);
+                    startActivity(intent);
+                }
+        );
     }
 }

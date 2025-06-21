@@ -49,8 +49,7 @@ def get_user(user_id):
     "username": "user",
     "password": "123456",
     "phone": "1234567890",
-    "email": "test@example.com",
-    "role": "user"
+    "email": "test@example.com"
 }
 
 '''
@@ -65,8 +64,7 @@ def create_new_user():
             username=data['username'],
             password=data['password'],  # Password should be hashed in the service
             phone=data['phone'],
-            email=data['email'],
-            role=data['role']
+            email=data['email']
         )
         return jsonify(user.serialize()), 201
     except ValueError as e:

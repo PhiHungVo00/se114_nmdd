@@ -8,10 +8,10 @@ def get_user_by_id(user_id):
 
 def get_all_users():
     """Retrieve all users."""
-    return User.query.filter_by(is_delete=False).all()
+    return User.query.filter(User.is_delete == False, User.role == 'user').all()
 
 
-def create_user(name, username, password, phone, email, role):
+def create_user(name, username, password, phone, email):
     """Create a new user."""
     if (User.query.filter_by(username=username, is_delete=False).first() 
         or User.query.filter_by(email=email, is_delete=False).first()
