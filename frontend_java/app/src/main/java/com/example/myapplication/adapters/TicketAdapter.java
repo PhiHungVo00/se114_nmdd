@@ -39,10 +39,18 @@ public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.TicketView
     String accessToken;
 
     List<Ticket> ticketList;
+    private OnItemClickListener listener;
 
     public TicketAdapter(List<Ticket> ticketList, String accessToken) {
         this.ticketList = ticketList;
         this.accessToken = accessToken;
+    }
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(Ticket ticket);
     }
 
     @NonNull
@@ -71,8 +79,12 @@ public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.TicketView
 
         // You can set click listeners or other interactions here if needed
         holder.itemView.setOnClickListener(v -> {
-           loadDetalTicketByApi(v, accessToken, ticket.getId());
-            // Toast.makeText(v.getContext(), "Clicked on ticket: " + ticket.getId(), Toast.LENGTH_SHORT).show();
+//           loadDetalTicketByApi(v, accessToken, ticket.getId());
+//            // Toast.makeText(v.getContext(), "Clicked on ticket: " + ticket.getId(), Toast.LENGTH_SHORT).show();
+            if (listener != null) {
+                Toast.makeText(v.getContext(), "Clicked on ticket: " + ticket.getId(), Toast.LENGTH_SHORT).show();
+                listener.onItemClick(ticket);
+            }
         });
 
     }

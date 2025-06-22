@@ -1,19 +1,25 @@
 package com.example.myapplication.activities;
 
+import static androidx.core.content.ContextCompat.startActivity;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
 import com.example.myapplication.adapters.TicketAdapter;
+import com.example.myapplication.models.BookingTicketResponse;
 import com.example.myapplication.models.Ticket;
 import com.example.myapplication.network.ApiClient;
 import com.example.myapplication.network.ApiTicketService;
@@ -22,8 +28,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class UserActivityHistoryBookingTicket extends AppCompatActivity {
+    int RequestDeleteTicket = 1;
 
     String accessToken;
     int userId;
@@ -34,6 +43,9 @@ public class UserActivityHistoryBookingTicket extends AppCompatActivity {
     ImageView imageUser;
     ImageView imageHome;
     ImageView imageHistory;
+
+    ActivityResultLauncher <Intent> launcherDetailTicket;
+
 
 
     @SuppressLint("MissingInflatedId")
@@ -61,9 +73,17 @@ public class UserActivityHistoryBookingTicket extends AppCompatActivity {
         // Load the booking history
         loadHistoryBookingTicket(accessToken, userId);
 
+        setLauncherDetailTicket();
 
 //         ListenerSetupBackButton();
         ListenerSetupHomeButton();
+
+//        thiết lập adapter onclick
+        ticketAdapter.setOnItemClickListener(
+        ticket -> {
+            loadDetailTicketByApi(ticket.getId());
+        });
+
     }
 
     private  void  loadHistoryBookingTicket(String accessToken, int userId) {
@@ -107,5 +127,58 @@ public class UserActivityHistoryBookingTicket extends AppCompatActivity {
             Intent intent = new Intent(UserActivityHistoryBookingTicket.this, UserActivityProfile.class);
             startActivity(intent);
         });
+    }
+
+
+    private void loadDetailTicketByApi(int ticketId) {
+        String token = "Bearer " + accessToken;
+        ApiTicketService apiTicketService = ApiClient.getRetrofit().create(ApiTicketService.class);
+        Call<BookingTicketResponse> call = apiTicketService.getTicketDetail(token, String.valueOf(ticketId));
+
+        call.enqueue(new Callback<BookingTicketResponse>() {
+            @Override
+            public void onResponse(Call<BookingTicketResponse> call, Response<BookingTicketResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    BookingTicketResponse bookingTicketResponse = response.body();
+
+                    Intent intent = new Intent(UserActivityHistoryBookingTicket.this, UserAdminShowDetailTicket.class);
+                    intent.putExtra("bookingTicketResponse", bookingTicketResponse);
+                    launcherDetailTicket.launch(intent);
+
+                } else {
+                    Log.e("API_ERROR", "Failed to load ticket details: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BookingTicketResponse> call, Throwable t) {
+                Log.e("API_ERROR", "Failed to load ticket details: " + t.getMessage());
+            }
+        });
+    }
+
+    void setLauncherDetailTicket(){
+        launcherDetailTicket = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RequestDeleteTicket) {
+                        // vé hiện tai đã bị xóa
+                        Intent data = result.getData();
+                        if (data != null) {
+                            int ticketId = data.getIntExtra("ticketId", -1);
+                            if (ticketId != -1) {
+                                // Xóa vé khỏi danh sách
+                                for (int i = 0; i < ticketList.size(); i++) {
+                                    if (ticketList.get(i).getId() == ticketId) {
+                                        ticketList.remove(i);
+                                        ticketAdapter.notifyItemRemoved(i);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+        );
     }
 }

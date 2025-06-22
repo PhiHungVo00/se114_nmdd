@@ -73,6 +73,18 @@ public class UserMainActivity extends AppCompatActivity {
         FirmShowsRecyclerView.setAdapter(firmShowAdapter);
         loadFirmsFromApi();
 
+//        thiết  lập sự kiện adapter
+        firmShowAdapter.setOnItemClickListener(new FirmShowAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(FirmShow firmShow) {
+                Intent intent = new Intent(UserMainActivity.this, UserDetailFirm.class);
+                intent.putExtra("firm_id", firmShow.getId());
+                startActivity(intent);
+            }
+        });
+
+        // Thiết lập sự kiện click cho các nút
+
 
 
 //        ListenerSetupMenuButton();

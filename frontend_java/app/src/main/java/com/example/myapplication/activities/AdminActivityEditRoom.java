@@ -10,7 +10,10 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.myapplication.R;
+import com.example.myapplication.models.RoomRequest;
 import com.example.myapplication.models.RoomResponse;
+import com.example.myapplication.network.ApiClient;
+import com.example.myapplication.network.ApiRoomService;
 
 public class AdminActivityEditRoom extends AppCompatActivity {
     String accessToken;
@@ -42,9 +45,7 @@ public class AdminActivityEditRoom extends AppCompatActivity {
         }
 
 
-
-
-
+        setListeners(roomResponse.getId());
 
 
     }
@@ -58,8 +59,51 @@ public class AdminActivityEditRoom extends AppCompatActivity {
     }
 
 
-    void setEvent(){
+    void setListeners(int roomId) {
+        buttonCancel.setOnClickListener(v -> {
+            setResult(RESULT_CANCELED);
+            finish();
+        });
+
+        buttonSave.setOnClickListener(v -> {
+            String roomName = editRoomName.getText().toString().trim();
+            String seatsStr = editSeats.getText().toString().trim();
+
+            if (roomName.isEmpty() || seatsStr.isEmpty()) {
+                editRoomName.setError("Room name is required");
+                editSeats.setError("Seats are required");
+                return;
+            }
+            int seats = Integer.parseInt(seatsStr);
+            // Create RoomRequest object
+            RoomRequest roomRequest = new RoomRequest(roomName, seats);
+            updateRoomApi(roomRequest, roomId);
+        });
         
+    }
+
+    void updateRoomApi(RoomRequest roomRequest, int roomId){
+        ApiRoomService apiRoomService = ApiClient.getRetrofit().create(ApiRoomService.class);
+        apiRoomService.updateRoom("Bearer " + accessToken, roomRequest, roomId)
+            .enqueue(new retrofit2.Callback<RoomResponse>() {
+                @Override
+                public void onResponse(retrofit2.Call<RoomResponse> call, retrofit2.Response<RoomResponse> response) {
+                    if (response.isSuccessful()) {
+                        RoomResponse updatedRoom = response.body();
+                        Intent resultIntent = new Intent();
+                        resultIntent.putExtra("updatedRoom", updatedRoom);
+                        setResult(3, resultIntent);
+                        finish();
+                    } else {
+                        // Handle error
+                    }
+                }
+
+                @Override
+                public void onFailure(retrofit2.Call<RoomResponse> call, Throwable t) {
+                    // Handle failure
+                }
+            });
     }
 
 

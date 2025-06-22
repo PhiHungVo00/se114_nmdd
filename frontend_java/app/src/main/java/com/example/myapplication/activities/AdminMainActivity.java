@@ -117,6 +117,17 @@ public class AdminMainActivity extends AppCompatActivity {
                 }
         );
 
+        imageManageFirm.setOnClickListener(
+                v -> {
+                    startActivity(new android.content.Intent(AdminMainActivity.this, AdminActivityManageFirm.class));
+                }
+        );
+        imageManageUser.setOnClickListener(
+                v -> {
+                    startActivity(new android.content.Intent(AdminMainActivity.this, AdminActivityManageUser.class));
+                }
+        );
+
 
 
     }

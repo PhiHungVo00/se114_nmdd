@@ -23,8 +23,7 @@ def create_user(name, username, password, phone, email):
         username=username,
         password=generate_password_hash(password),  # Password should be hashed before saving
         phone=phone,
-        email=email,
-        role=role
+        email=email
     )
     
     db.session.add(new_user)
@@ -54,7 +53,10 @@ def delete_user(user_id):
     user = get_user_by_id(user_id)
     if not user:
         raise ValueError("User not found")
-
+    
+    # nếu tài khoản đã mua vé thì không được xóa
+    if user.tickets:
+        raise ValueError("User has associated tickets and cannot be deleted")
     user.is_delete = True
     db.session.commit()
     return user

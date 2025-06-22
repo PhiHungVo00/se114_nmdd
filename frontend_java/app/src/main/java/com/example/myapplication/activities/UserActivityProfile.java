@@ -136,11 +136,13 @@ public class UserActivityProfile extends AppCompatActivity {
     private void listenerSetupMenu() {
         imageHome.setOnClickListener(v -> {
             // Handle home button click
-            finish(); // Close the current activity
+            Intent intent = new Intent(UserActivityProfile.this, UserMainActivity.class);
+            startActivity(intent);
         });
         imageHistory.setOnClickListener(v -> {
             // Handle history button click
-            finish(); // Close the current activity
+            Intent intent = new Intent(UserActivityProfile.this, UserActivityHistoryBookingTicket.class);
+            startActivity(intent);
         });
     }
 

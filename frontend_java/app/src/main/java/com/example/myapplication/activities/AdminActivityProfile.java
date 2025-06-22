@@ -219,5 +219,18 @@ public class AdminActivityProfile extends AppCompatActivity {
                     startActivity(intent);
                 }
         );
+
+        imageManageFirm.setOnClickListener(
+                v -> {
+                    Intent intent = new Intent(AdminActivityProfile.this, AdminActivityManageFirm.class);
+                    startActivity(intent);
+                }
+        );
+        imageManageUser.setOnClickListener(
+                v -> {
+                    Intent intent = new Intent(AdminActivityProfile.this, AdminActivityManageUser.class);
+                    startActivity(intent);
+                }
+        );
     }
 }

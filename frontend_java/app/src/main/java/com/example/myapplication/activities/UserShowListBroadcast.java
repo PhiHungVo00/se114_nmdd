@@ -2,6 +2,7 @@ package com.example.myapplication.activities;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -71,6 +72,18 @@ public class UserShowListBroadcast extends AppCompatActivity {
 
         broadcastFirmRecyclerView.setAdapter(broadCastFirmAdapter);
         loadListBroadcast(firmId);
+
+        // Thiết lập adapter click listener
+
+        broadCastFirmAdapter.setOnItemClickListener(
+                broadcastFirm -> {
+                    Intent intent = new Intent(UserShowListBroadcast.this, UserShowSeatsActivity.class);
+                    intent.putExtra("broadcastId", broadcastFirm.getID());
+                    startActivity(intent);
+                }
+        );
+
+
 
 
         //        Listeners

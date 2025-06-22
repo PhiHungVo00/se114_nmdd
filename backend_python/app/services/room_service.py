@@ -1,5 +1,6 @@
 from app import db
 from app.models.Room import Room
+from app.models.BroadCast import Broadcast
 
 
 def get_all_rooms():
@@ -42,6 +43,14 @@ def delete_room(room_id):
     room = get_room_by_id(room_id)
     if not room:
         raise ValueError("Room not found")
+    # Check if the room has any broadcasts or seats associated with it
+    broadcast = Broadcast.query.filter(
+        Broadcast.RoomID == room.ID,
+        Broadcast.is_delete == False,
+        Broadcast.dateBroadcast >= db.func.current_date()
+    ).first()
+    if broadcast:
+        raise ValueError("Room has associated broadcasts and cannot be deleted")
 
     room.is_delete = True
     db.session.commit()

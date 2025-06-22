@@ -26,6 +26,16 @@ public class BroadCastFirmAdapter extends RecyclerView.Adapter<BroadCastFirmAdap
         this.broadcastFirmList = broadcastFirmList;
     }
 
+    public interface OnItemClickListener {
+        void onItemClick(BroadcastFirm broadcastFirm);
+    }
+
+    private OnItemClickListener listener;
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
+
 
     @NonNull
     @Override
@@ -45,9 +55,12 @@ public class BroadCastFirmAdapter extends RecyclerView.Adapter<BroadCastFirmAdap
 
 
         holder.itemView.setOnClickListener(v -> {
-            Intent intent = new Intent(v.getContext(), UserShowSeatsActivity.class);
-            intent.putExtra("broadcastId", broadcast.getID());
-            v.getContext().startActivity(intent);
+//            Intent intent = new Intent(v.getContext(), UserShowSeatsActivity.class);
+//            intent.putExtra("broadcastId", broadcast.getID());
+//            v.getContext().startActivity(intent);
+            if (listener != null) {
+                listener.onItemClick(broadcast);
+            }
         });
 
     }

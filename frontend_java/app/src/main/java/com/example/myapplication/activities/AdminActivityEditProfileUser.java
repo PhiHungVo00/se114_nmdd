@@ -1,11 +1,9 @@
 package com.example.myapplication.activities;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,79 +19,76 @@ import java.io.IOException;
 
 import retrofit2.Call;
 
-public class UserEditProfile extends AppCompatActivity {
-    TextView tvUID;
-    TextView tvUsername;
-    EditText editName;
-    EditText editEmail;
-    EditText editPhone;
-    Button btnSave;
-    Button btnCancel;
+public class AdminActivityEditProfileUser extends AppCompatActivity {
+    String accessToken;
 
-    @SuppressLint("MissingInflatedId")
+    TextView tvUID, tvUsername, editName, editEmail, editPhone;
+    Button btnSave, btnCancel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.user_edit_profile);
-        tvUID = findViewById(R.id.tvUID);
-        tvUsername = findViewById(R.id.tvUsername);
-        editName = findViewById(R.id.editName);
-        editEmail = findViewById(R.id.editEmail);
-        editPhone = findViewById(R.id.editPhone);
-        // Assuming you have a User object with the necessary data
-        Intent intent = getIntent();
-        String accessToken = intent.getStringExtra("access_token");
-        int userId = intent.getIntExtra("userID", -1);
-        String username = intent.getStringExtra("username");
-        String name = intent.getStringExtra("name");
-        String email = intent.getStringExtra("email");
-        String phone = intent.getStringExtra("phone");
-        tvUID.setText("UID: "+ String.valueOf(userId));
-        tvUsername.setText("User: " + username);
+        setContentView(R.layout.admin_edit_profile_of_user);
+//        Get the access token from SharedPreferences
+        accessToken = getSharedPreferences("MyAppPrefs", MODE_PRIVATE).getString("access_token", null);
 
-        btnSave = findViewById(R.id.btnSave);
-        btnCancel = findViewById(R.id.btnCancel);
-
-
-        btnCancel.setOnClickListener(
-                v -> {
-                    // Handle cancel button click
-                    // You can finish the activity or navigate back to the previous screen
-                    finish();
-                }
-        );
-
-        btnSave.setOnClickListener(
-                v -> {
-                    // Handle save button click
-                    String newName = editName.getText().toString();
-                    String newEmail = editEmail.getText().toString();
-                    String newPhone = editPhone.getText().toString();
-                    UserUpdateRequest userUpdateRequest = new UserUpdateRequest(newName, newEmail, newPhone);
-
-                    if (isValidPhoneNumber(newPhone) && isValidEmail(newEmail)) {
-                        // Call the updateProfile method to save changes
-                        updateProfile(accessToken , userId, userUpdateRequest);
-                    } else {
-                        // Show an error message if validation fails
-                        if (!isValidPhoneNumber(newPhone)) {
-                            editPhone.setError("Invalid phone number");
-                        }
-                        if (!isValidEmail(newEmail)) {
-                            editEmail.setError("Invalid email format");
-                        }
-                    }
-                }
-        );
-
-
+        UserInfo userInfo = (UserInfo) getIntent().getParcelableExtra("userInfo");
+        if (userInfo == null) {
+            finish();
+            return;
+        }
+        ListenerButtonEvents(userInfo);
 
 
 
 
     }
+    private void setElementsByID() {
+        tvUID = findViewById(R.id.tvUID);
+        tvUsername = findViewById(R.id.tvUsername);
+        editName = findViewById(R.id.editName);
+        editEmail = findViewById(R.id.editEmail);
+        editPhone = findViewById(R.id.editPhone);
+        btnSave = findViewById(R.id.btnSave);
+        btnCancel = findViewById(R.id.btnCancel);
+    }
 
-    //    check phone number has 10 chars and only contains digits
+    void ListenerButtonEvents(UserInfo userInfo) {
+        setElementsByID();
+        tvUID.setText("UID: " + userInfo.getId());
+        tvUsername.setText("User: " + userInfo.getUsername());
+        editName.setText(userInfo.getName());
+        editEmail.setText(userInfo.getEmail());
+        editPhone.setText(userInfo.getPhone());
+
+        btnSave.setOnClickListener(v -> {
+            String Name = editName.getText().toString();
+            String Email = editEmail.getText().toString();
+            String Phone = editPhone.getText().toString();
+            if( Name.isEmpty() || Email.isEmpty() || Phone.isEmpty()) {
+                Toast.makeText(AdminActivityEditProfileUser.this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (!isValidEmail(Email)) {
+                Toast.makeText(AdminActivityEditProfileUser.this, "Invalid email format", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (!isValidPhoneNumber(Phone)) {
+                Toast.makeText(AdminActivityEditProfileUser.this, "Invalid phone number format", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            UserUpdateRequest userUpdateRequest = new UserUpdateRequest(Name, Phone, Email);
+            updateProfile(userInfo.getId(), userUpdateRequest);
+
+
+        });
+
+        btnCancel.setOnClickListener(v -> {
+            // Handle cancel button click
+            finish();
+        });
+    }
+
     private boolean isValidPhoneNumber(String phone) {
         // Kiểm tra số điện thoại có 10 kí tự và chỉ chứa chữ số
         if (phone.length() != 10) {
@@ -114,9 +109,7 @@ public class UserEditProfile extends AppCompatActivity {
         return email.matches(emailPattern);
     }
 
-
-
-    void  updateProfile(String accessToken, int userId, UserUpdateRequest userUpdateRequest) {
+    void  updateProfile(int userId, UserUpdateRequest userUpdateRequest) {
         ApiUserService apiUserService = ApiClient.getRetrofit().create(ApiUserService.class);
         Call<UserInfo> call = apiUserService.updateUser("Bearer " + accessToken, String.valueOf(userId), userUpdateRequest);
         call.enqueue(new retrofit2.Callback<UserInfo>() {
@@ -126,10 +119,10 @@ public class UserEditProfile extends AppCompatActivity {
                     // Handle successful update
                     UserInfo updatedUser = response.body();
                     // You can update the UI or show a success message here
-                    Toast.makeText(UserEditProfile.this, "Profile updated successfully!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AdminActivityEditProfileUser.this, "Profile updated successfully!", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent();
                     intent.putExtra("updatedUserInfo", updatedUser);
-                    setResult(RESULT_OK, intent);
+                    setResult(1, intent);
                     finish(); // Close the activity after saving
 
                 } else {
@@ -137,12 +130,13 @@ public class UserEditProfile extends AppCompatActivity {
                     if (response.errorBody() != null) {
                         try {
                             String errorMessage = response.errorBody().string();
-                            Toast.makeText(UserEditProfile.this, "Error: " + errorMessage, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(AdminActivityEditProfileUser.this, "Error: " + errorMessage, Toast.LENGTH_SHORT).show();
+                            Log.e("UserEditProfile", "Error updating profile: " + errorMessage);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                     } else {
-                        Toast.makeText(UserEditProfile.this, "Failed to update profile", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AdminActivityEditProfileUser.this, "Failed to update profile", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -150,10 +144,9 @@ public class UserEditProfile extends AppCompatActivity {
             @Override
             public void onFailure(Call<UserInfo> call, Throwable t) {
                 // Handle the failure case
-                Toast.makeText(UserEditProfile.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(AdminActivityEditProfileUser.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                 Log.e("UserEditProfile", "Failed to update profile: " + t.getMessage());
             }
         });
     }
-
 }

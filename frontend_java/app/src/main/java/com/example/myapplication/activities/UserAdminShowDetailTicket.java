@@ -22,6 +22,8 @@ import com.example.myapplication.models.Broadcast;
 import com.example.myapplication.network.ApiClient;
 import com.example.myapplication.network.ApiTicketService;
 
+import java.util.Date;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -41,7 +43,7 @@ public class UserAdminShowDetailTicket extends AppCompatActivity {
     private TextView tvTimeOrder;
     private TextView tvPrice;
     private Button btnBack;
-    private Button btnDelete;
+    private Button btnDelete, btnDeleteUser;
     private TextView tvUserID;
     String accessToken;
     String ticketId;
@@ -62,16 +64,7 @@ public class UserAdminShowDetailTicket extends AppCompatActivity {
 //        set role from SharedPreferences
         String role = prefs.getString("role", null);
 
-        // Retrieve the BookingTicketResponse object from the intent
-//        try {
-//            BookingTicketResponse bookingTicketResponse = getIntent().getParcelableExtra("bookingTicketResponse");
-//            if (bookingTicketResponse == null) {
-//                throw new NullPointerException("BookingTicketResponse is null");
-//            }
-//        } catch (NullPointerException e) {
-//            Log.e("UserAdminShowDetailTicket", "Error retrieving BookingTicketResponse: " + e.getMessage());
-//            // Handle the error, e.g., show a message to the user
-//        }
+
         BookingTicketResponse bookingTicketResponse = getIntent().getParcelableExtra("bookingTicketResponse");
         Broadcast broadcast = bookingTicketResponse.getBroadcast();
         Log.d("thumbnail", "Thumbnail URL: " + broadcast.getThumbnail());
@@ -118,9 +111,15 @@ public class UserAdminShowDetailTicket extends AppCompatActivity {
 
         if (role != null && role.equals("admin")) {
             btnDelete.setVisibility(Button.VISIBLE);
-            listenerDeleteTicket();
+            listenerDeleteTicket(bookingTicketResponse);
         } else {
             btnDelete.setVisibility(Button.GONE);
+        }
+        if (role != null && role.equals("user")) {
+            btnDeleteUser.setVisibility(Button.VISIBLE);
+            listenerDeleteUser(bookingTicketResponse);
+        } else {
+            btnDeleteUser.setVisibility(Button.GONE);
         }
 
 
@@ -177,17 +176,52 @@ public class UserAdminShowDetailTicket extends AppCompatActivity {
         tvUserID = findViewById(R.id.tvUserID);
         btnBack = findViewById(R.id.btnBack);
         btnDelete = findViewById(R.id.btnDelete);
+        btnDeleteUser = findViewById(R.id.btnDeleteUser);
     }
 
 
-    void listenerDeleteTicket() {
+    void listenerDeleteTicket(BookingTicketResponse bookingTicketResponse) {
         btnDelete.setOnClickListener(v -> {
             new AlertDialog.Builder(UserAdminShowDetailTicket.this)
                 .setTitle("Xác nhận xóa vé")
                 .setMessage("Bạn có chắc chắn muốn xóa không?")
                 .setPositiveButton("Xóa", (dialog, which) -> {
                     DeleteTicketByApi();
-                    finish();
+                    Intent resultIntent = new Intent();
+                    resultIntent.putExtra("ticketId", bookingTicketResponse.getID());
+                    setResult(4, resultIntent); // Trả về kết quả OK với ticketId
+                    finish(); // Đóng activity sau khi xóa vé
+                })
+                .setNegativeButton("Hủy", (dialog, which) -> {
+                    dialog.dismiss(); // Đóng dialog nếu chọn Cancel
+                })
+                .show();
+        });
+
+
+    }
+
+    void listenerDeleteUser(BookingTicketResponse bookingTicketResponse) {
+//        ticket just delete on the order day
+
+        btnDeleteUser.setOnClickListener(v -> {
+            Date currentDate = new Date();
+            String currentDateStr = android.text.format.DateFormat.format("yyyy-MM-dd", currentDate).toString();
+            String orderDate = bookingTicketResponse.getDateOrder();
+            if (!currentDateStr.equals(orderDate)) {
+                Toast.makeText(UserAdminShowDetailTicket.this, "It was too time to delete this ticket", Toast.LENGTH_SHORT).show();
+                return; // Không hiển thị nút xóa nếu ngày hiện tại không trùng với ngày đặt vé
+            }
+            new AlertDialog.Builder(UserAdminShowDetailTicket.this)
+                .setTitle("Xác nhận xóa vé")
+                .setMessage("Bạn có chắc chắn muốn xóa vé này không?")
+                .setPositiveButton("Xóa", (dialog, which) -> {
+                    DeleteTicketByApi();
+                    Intent resultIntent = new Intent();
+                    resultIntent.putExtra("ticketId", bookingTicketResponse.getID());
+                    setResult(1, resultIntent); // Trả về kết quả OK với ticketId
+                    finish(); // Đóng activity sau khi xóa vé
+
                 })
                 .setNegativeButton("Hủy", (dialog, which) -> {
                     dialog.dismiss(); // Đóng dialog nếu chọn Cancel

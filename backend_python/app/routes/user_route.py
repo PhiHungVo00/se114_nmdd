@@ -119,6 +119,8 @@ def delete_existing_user(user_id):
     try:
         user = delete_user(user_id)
         return jsonify({'message': 'User deleted successfully', 'user': user.serialize()}), 200
+   
+   
     except ValueError as e:
         return jsonify({'message': str(e)}), 404
     except Exception as e:

@@ -75,7 +75,18 @@
         <activity
             android:name=".activities.AdminActivityEditRoom"
             android:exported="false" />
-
+        <activity
+            android:name=".activities.AdminActivityAddRoom"
+            android:exported="false" />
+        <activity
+            android:name=".activities.AdminActivityManageFirm"
+            android:exported="false" />
+        <activity
+            android:name=".activities.AdminActivityManageUser"
+            android:exported="false" />
+        <activity
+            android:name=".activities.AdminActivityEditProfileUser"
+            android:exported="false" />
 
     </application>
 

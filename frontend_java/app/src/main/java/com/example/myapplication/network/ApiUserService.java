@@ -1,5 +1,6 @@
 package com.example.myapplication.network;
 
+import com.example.myapplication.models.StatusMessage;
 import com.example.myapplication.models.UserInfo;
 import com.example.myapplication.models.UserUpdateRequest;
 
@@ -7,6 +8,7 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.PUT;
@@ -21,6 +23,9 @@ public interface ApiUserService {
 
     @PUT("users/update/{userId}")
     Call<UserInfo> updateUser(@Header("Authorization") String token, @Path("userId") String userId, @Body UserUpdateRequest userUpdateRequest);
+
+    @DELETE("users/delete/{userId}")
+    Call<StatusMessage> deleteUser(@Header("Authorization") String token, @Path("userId") String userId);
 
 
 

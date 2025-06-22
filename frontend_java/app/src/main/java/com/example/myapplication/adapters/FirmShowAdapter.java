@@ -19,16 +19,25 @@ import java.util.List;
 
 public class FirmShowAdapter extends RecyclerView.Adapter<FirmShowAdapter.FirmShowViewHolder> {
     private List <FirmShow> firmShowList;
+    private OnItemClickListener listener;
 
     public FirmShowAdapter(List<FirmShow> firmShowList) {
         this.firmShowList = firmShowList;
     }
 
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
     @NonNull
     @Override
     public FirmShowViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_container_firm_show, parent, false);
         return new FirmShowViewHolder(view);
+    }
+
+
+    public interface OnItemClickListener {
+        void onItemClick(FirmShow firmShow);
     }
 
     @Override
@@ -48,9 +57,13 @@ public class FirmShowAdapter extends RecyclerView.Adapter<FirmShowAdapter.FirmSh
 
         // ✅ Handle click to go to detail activity
         holder.itemView.setOnClickListener(v -> {
-            Intent intent = new Intent(v.getContext(), UserDetailFirm.class); // Change to your actual Detail Activity
-            intent.putExtra("firm_id", firmShow.getId());
-            v.getContext().startActivity(intent);
+//            Intent intent = new Intent(v.getContext(), UserDetailFirm.class); // Change to your actual Detail Activity
+//            intent.putExtra("firm_id", firmShow.getId());
+//            v.getContext().startActivity(intent);
+
+            if (listener != null) {
+                listener.onItemClick(firmShow);
+            }
         });
 
     }
