@@ -30,7 +30,7 @@ public class AdminActivityCreateUser extends AppCompatActivity {
         setContentView(R.layout.admin_activity_create_user);
 
 //        get access token from shared preferences
-        accessToken = getSharedPreferences("MyPrefs", MODE_PRIVATE).getString("accessToken", null);
+        accessToken = getSharedPreferences("MyAppPrefs", MODE_PRIVATE).getString("access_token", null);
         Log.d("accessToken", "Access Token: " + accessToken);
 
         setElementById();

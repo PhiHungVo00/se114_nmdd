@@ -56,7 +56,12 @@ public class AdminActivityManageUser extends AppCompatActivity {
         setContentView(R.layout.admin_activity_manage_user);
         setElemntById();
 //        Get access token from  shared preferences
-        accessToken = getSharedPreferences("MyPrefs", MODE_PRIVATE).getString("accessToken", null);
+        accessToken = getSharedPreferences("MyAppPrefs", MODE_PRIVATE).getString("access_token", null);
+        if (accessToken == null) {
+            Toast.makeText(this, "Access token not found", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
 
 //        Set up the RecyclerView and UserAdapter
         userAdapter = new UserAdapter(userInfoList);

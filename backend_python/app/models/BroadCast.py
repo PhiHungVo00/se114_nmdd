@@ -26,7 +26,7 @@ class Broadcast(db.Model):
             'FirmID': self.FirmID,
             'TimeBroadcast': self.timeBroadcast.isoformat() if self.timeBroadcast else None,
             'DateBroadcast': self.dateBroadcast.isoformat() if self.dateBroadcast else None,
-            'Price': self.price,
+            'Price': self.price,    
             'Seats': self.seats
         }
     

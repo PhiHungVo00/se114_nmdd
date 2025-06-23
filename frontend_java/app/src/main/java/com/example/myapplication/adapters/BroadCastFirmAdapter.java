@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -21,13 +22,20 @@ import java.util.List;
 public class BroadCastFirmAdapter extends RecyclerView.Adapter<BroadCastFirmAdapter.BroadcastFirmHolder> {
 
     private List<BroadcastFirm> broadcastFirmList;
+    private String role = "user"; // Default role
 
     public BroadCastFirmAdapter(List<BroadcastFirm> broadcastFirmList) {
         this.broadcastFirmList = broadcastFirmList;
     }
 
+    public BroadCastFirmAdapter(List<BroadcastFirm> broadcastFirmList, String role) {
+        this.broadcastFirmList = broadcastFirmList;
+        this.role = role;
+    }
+
     public interface OnItemClickListener {
         void onItemClick(BroadcastFirm broadcastFirm);
+        void onDeleteClick(BroadcastFirm broadcastFirm);
     }
 
     private OnItemClickListener listener;
@@ -54,12 +62,26 @@ public class BroadCastFirmAdapter extends RecyclerView.Adapter<BroadCastFirmAdap
         holder.textPrice.setText(String.format("%,.0f đ", broadcast.getPrice()));
 
 
+        if(role != null && role.equals("admin")) {
+            holder.buttonDelete.setVisibility(View.VISIBLE);
+        }
+        else {
+            holder.buttonDelete.setVisibility(View.GONE);
+        }
+
+
         holder.itemView.setOnClickListener(v -> {
 //            Intent intent = new Intent(v.getContext(), UserShowSeatsActivity.class);
 //            intent.putExtra("broadcastId", broadcast.getID());
 //            v.getContext().startActivity(intent);
             if (listener != null) {
                 listener.onItemClick(broadcast);
+            }
+
+        });
+        holder.buttonDelete.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onDeleteClick(broadcast);
             }
         });
 
@@ -72,6 +94,7 @@ public class BroadCastFirmAdapter extends RecyclerView.Adapter<BroadCastFirmAdap
 
     public static class BroadcastFirmHolder extends RecyclerView.ViewHolder {
         TextView textTime, textDate, textRoomSeats, textPrice;
+        ImageButton buttonDelete;
 
         public BroadcastFirmHolder(@NonNull View itemView) {
             super(itemView);
@@ -79,6 +102,7 @@ public class BroadCastFirmAdapter extends RecyclerView.Adapter<BroadCastFirmAdap
             textDate = itemView.findViewById(R.id.textDate);
             textRoomSeats = itemView.findViewById(R.id.textRoomSeats);
             textPrice = itemView.findViewById(R.id.textPrice);
+            buttonDelete = itemView.findViewById(R.id.buttonDelete);
         }
 
 

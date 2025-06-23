@@ -70,9 +70,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:fontFamily="@font/ubuntu_regular"
-                android:textSize="@dimen/_14sdp"
+                android:textSize="@dimen/_15sdp"
                 android:layout_weight="1"
-                android:text="Doanh Thu Ngày"
+                android:text="Total Revenue Today"
                 android:textColor="@color/primary_text"/>
 
             <TextView

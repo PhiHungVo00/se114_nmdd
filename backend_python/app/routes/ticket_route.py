@@ -4,7 +4,8 @@ from app.services.ticket_service import (
     get_all_tickets_service,
     get_tickets_by_user_service,
     delete_ticket_service,
-    get_ticket_detail_by_id_service
+    get_ticket_detail_by_id_service,
+    getDetailTicketBySeatID
 )
 
 from flask import Blueprint, request, jsonify
@@ -111,3 +112,11 @@ def delete_ticket_route(ticket_id):
     if 'message' in result:
         return jsonify(result), 404
     return jsonify({'message': 'Ticket deleted successfully'}), 200
+
+
+# Get ticket by seat ID
+# link: localhost:5000/api/tickets/get_by_seat/<seat_id>
+@TICKET_BLUEPRINT.route('/get_by_seat/<int:seat_id>', methods=['GET'])
+def get_ticket_by_seat(seat_id):
+    """Retrieve a ticket by its Seat ID."""
+    return jsonify(getDetailTicketBySeatID(seat_id)), 200

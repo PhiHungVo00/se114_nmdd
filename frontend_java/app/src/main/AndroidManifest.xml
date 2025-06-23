@@ -90,6 +90,18 @@
         <activity
             android:name=".activities.AdminActivityCreateUser"
             android:exported="false" />
+        <activity
+            android:name=".activities.AdminDetailFirm"
+            android:exported="false" />
+        <activity
+            android:name=".activities.AdminActivityListBroadcast"
+            android:exported="false" />
+        <activity
+            android:name=".activities.AdminShowSeatsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.AdminActivityCreateBroadcast"
+            android:exported="false" />
     </application>
 
 </manifest>

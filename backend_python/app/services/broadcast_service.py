@@ -116,9 +116,10 @@ def get_all_broadcasts_for_firm(firm_id, date_broadcast=None):
     broadcasts = Broadcast.query.filter(
         and_(
             Broadcast.FirmID == firm_id,
-            Broadcast.is_delete == False
+            Broadcast.is_delete == False,
+            Broadcast.dateBroadcast >= datetime.now().date()
         )
-    )
+    ).order_by(Broadcast.dateBroadcast, Broadcast.timeBroadcast).all()
     if date_broadcast:
         broadcasts = broadcasts.filter(Broadcast.dateBroadcast == date_broadcast)
     return broadcasts.all()
@@ -135,7 +136,9 @@ def get_all_broadcasts_on_date(date_broadcast):
             Broadcast.dateBroadcast == date_broadcast,
             Broadcast.is_delete == False
         )
-    ).all()
+    ).order_by(Broadcast.timeBroadcast).all()
+    if not broadcasts:
+        raise ValueError("No broadcasts found for this date")
     return broadcasts
 
 
@@ -143,6 +146,7 @@ def get_all_broadcasts_on_date(date_broadcast):
 def update_broadcast(broadcast_id, room_id=None, firm_id=None, time_broadcast=None, date_broadcast=None, price=None, seats=None):
     """Update an existing broadcast."""
     broadcast = get_broadcast_by_id(broadcast_id)
+
     
     if room_id:
         broadcast.RoomID = room_id

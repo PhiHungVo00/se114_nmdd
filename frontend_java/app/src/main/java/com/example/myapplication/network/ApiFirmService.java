@@ -8,6 +8,7 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 
@@ -17,7 +18,7 @@ public interface ApiFirmService {
     Call<List<FirmShow>> getAllFirms();
 
     @GET("firms/get/{id}")
-    Call<DetailFirm> getFirmById(@Path("id") String id);
+    Call<DetailFirm> getFirmById(@Header("Authorization") String token, @Path("id") String id);
 
 
 

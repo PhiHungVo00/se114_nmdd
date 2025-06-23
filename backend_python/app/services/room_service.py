@@ -29,6 +29,13 @@ def update_room(room_id, name=None, seats=None):
         raise ValueError("Room not found")
     if Room.query.filter(Room.ID != room_id, Room.name == name, Room.is_delete == False).first():
         raise ValueError("Room with this name already exists")
+    broadcast = Broadcast.query.filter(
+        Broadcast.RoomID == room.ID,
+        Broadcast.is_delete == False,
+        Broadcast.dateBroadcast >= db.func.current_date()
+    ).first()
+    if broadcast:
+        raise ValueError("Room has associated broadcasts and cannot be updated")
 
     if name:
         room.name = name

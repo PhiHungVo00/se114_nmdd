@@ -76,10 +76,21 @@ public class UserShowListBroadcast extends AppCompatActivity {
         // Thiết lập adapter click listener
 
         broadCastFirmAdapter.setOnItemClickListener(
-                broadcastFirm -> {
-                    Intent intent = new Intent(UserShowListBroadcast.this, UserShowSeatsActivity.class);
-                    intent.putExtra("broadcastId", broadcastFirm.getID());
-                    startActivity(intent);
+                new BroadCastFirmAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(BroadcastFirm broadcastFirm) {
+                        // Handle item click, e.g., navigate to a detailed view
+                        Intent intent = new Intent(UserShowListBroadcast.this, UserShowSeatsActivity.class);
+                        intent.putExtra("broadcastId", broadcastFirm.getID());
+                        intent.putExtra("firmId", firmId);
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void onDeleteClick(BroadcastFirm broadcastFirm) {
+                        // Handle delete click if needed
+                        Toast.makeText(UserShowListBroadcast.this, "Xóa lịch chiếu không được phép", Toast.LENGTH_SHORT).show();
+                    }
                 }
         );
 

@@ -189,6 +189,7 @@ public class UserAdminShowDetailTicket extends AppCompatActivity {
                     DeleteTicketByApi();
                     Intent resultIntent = new Intent();
                     resultIntent.putExtra("ticketId", bookingTicketResponse.getID());
+                    resultIntent.putExtra("seatId", bookingTicketResponse.getSeatID());
                     setResult(4, resultIntent); // Trả về kết quả OK với ticketId
                     finish(); // Đóng activity sau khi xóa vé
                 })

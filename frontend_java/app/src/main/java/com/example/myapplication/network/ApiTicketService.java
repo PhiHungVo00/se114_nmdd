@@ -34,9 +34,15 @@ public interface ApiTicketService {
     Call<List<Ticket>> getAllTickets(@Header("Authorization") String token);
 
 
+    @GET("tickets/get_by_seat/{seatId}")
+    Call<BookingTicketResponse> getTicketBySeat(@Header("Authorization") String token,
+                                              @Path("seatId") String seatId);
+
     @DELETE("tickets/delete/{ticketId}")
     Call<String> deleteTicket(@Header("Authorization") String token,
                             @Path("ticketId") String ticketId);
+
+
 
 
 }

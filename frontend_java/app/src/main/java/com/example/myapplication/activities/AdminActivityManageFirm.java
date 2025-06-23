@@ -32,6 +32,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class AdminActivityManageFirm extends AppCompatActivity {
+    String accessToken;
 
     ImageView imageHome, imageManageFirm, imageManageUser, imageManageRoom, imageUser;
     ImageView imageSearch;
@@ -54,18 +55,12 @@ public class AdminActivityManageFirm extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.admin_acivity_manage_firm);
         setElementsByID();
+        accessToken = getSharedPreferences("MyAppPrefs", MODE_PRIVATE).getString("access_token", null);
 
         mListFirmShows = new ArrayList<>();
         // Set up the RecyclerView and Adapter
         firmShowAdapter = new FirmShowAdapter(mListFirmShows);
-//        FirmShowsRecyclerView = findViewById(R.id.firmShowsRecyclerView);
-//        FirmShowsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-//
-//        mListFirmShows = new ArrayList<>();
-//        firmShowAdapter = new FirmShowAdapter(mListFirmShows);
-//
-//        FirmShowsRecyclerView.setAdapter(firmShowAdapter);
-//        loadFirmsFromApi();
+
         recyclerViewFirm.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewFirm.setAdapter(firmShowAdapter);
 
@@ -80,14 +75,14 @@ public class AdminActivityManageFirm extends AppCompatActivity {
 
 
         // Set up click listener for firm items
-//        firmShowAdapter.setOnItemClickListener(new FirmShowAdapter.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(FirmShow firmShow) {
-//                Intent intent = new Intent(AdminActivityManageFirm.this, UserDetailFirm.class);
-//                intent.putExtra("firm_id", firmShow.getId());
-//                startActivity(intent);
-//            }
-//        });
+        firmShowAdapter.setOnItemClickListener(new FirmShowAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(FirmShow firmShow) {
+                Intent intent = new Intent(AdminActivityManageFirm.this, AdminDetailFirm.class);
+                intent.putExtra("firm_id", firmShow.getId());
+                startActivity(intent);
+            }
+        });
 
         // Set up click listener for adding a new firm
 //        fabAddFirm.setOnClickListener(v -> {
@@ -95,7 +90,6 @@ public class AdminActivityManageFirm extends AppCompatActivity {
 //            launcherAddFirm.launch(intent);
 //        });
 
-        //
 
 
     }

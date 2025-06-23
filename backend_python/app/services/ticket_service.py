@@ -124,3 +124,15 @@ def get_ticket_detail_by_id_service(ticket_id):
         return res
     except Exception as e:
         raise ValueError(f"Error retrieving ticket detail: {str(e)}")
+    
+
+def getDetailTicketBySeatID(seat_id):
+    """Retrieve detailed information about a ticket by its Seat ID."""
+    try:
+        ticket = Ticket.query.filter_by(SeatID=seat_id, is_delete=False).first()
+        if not ticket:
+            raise ValueError("Ticket not found for this seat")
+        
+        return get_ticket_detail_by_id_service(ticket.ID)
+    except Exception as e:
+        raise ValueError(f"Error retrieving ticket detail by seat ID: {str(e)}")
