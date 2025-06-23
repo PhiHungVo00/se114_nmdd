@@ -96,6 +96,9 @@ public class UserEditProfile extends AppCompatActivity {
     //    check phone number has 10 chars and only contains digits
     private boolean isValidPhoneNumber(String phone) {
         // Kiểm tra số điện thoại có 10 kí tự và chỉ chứa chữ số
+        if('0' != phone.charAt(0)) {
+            return false; // Số điện thoại phải bắt đầu bằng 0
+        }
         if (phone.length() != 10) {
             return false;
         }

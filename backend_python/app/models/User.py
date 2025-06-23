@@ -13,7 +13,7 @@ class User(db.Model):
     is_delete = db.Column(db.Boolean, default=False)
 
 
-    def __init__(self, name, username, password, phone, email, role):
+    def __init__(self, name, username, password, phone, email, role='user'):
         self.Name = name
         self.username = username
         self.password = password

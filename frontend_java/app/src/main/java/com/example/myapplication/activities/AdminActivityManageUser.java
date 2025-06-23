@@ -67,6 +67,10 @@ public class AdminActivityManageUser extends AppCompatActivity {
 
         setLauchEditUserActivity();
 
+//        Sự kiện tạo user từ admin
+        setLauchAddUserActivity();
+        setOnclickAddUser();
+
     }
 
     private void setElemntById(){
@@ -247,6 +251,31 @@ public class AdminActivityManageUser extends AppCompatActivity {
             });
     }
 
+//      Sự kiện thêm người dùng
+    void setLauchAddUserActivity() {
+        launchAddUserActivity = registerForActivityResult(
+            new androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK) {
+                    Intent data = result.getData();
+                    if (data != null) {
+                        UserInfo newUserInfo = data.getParcelableExtra("newUserInfo");
+                        if (newUserInfo != null) {
+                            // Add the new user to the list and notify the adapter
+                            userInfoList.add(newUserInfo);
+                            userAdapter.notifyItemInserted(userInfoList.size() - 1);
+                        }
+                    }
+                }
+            });
+    }
+
+    void setOnclickAddUser() {
+        fabAddUser.setOnClickListener(v -> {
+            Intent intent = new Intent(AdminActivityManageUser.this, AdminActivityCreateUser.class);
+            launchAddUserActivity.launch(intent);
+        });
+    }
 
 
 }

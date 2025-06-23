@@ -87,7 +87,9 @@
         <activity
             android:name=".activities.AdminActivityEditProfileUser"
             android:exported="false" />
-
+        <activity
+            android:name=".activities.AdminActivityCreateUser"
+            android:exported="false" />
     </application>
 
 </manifest>
