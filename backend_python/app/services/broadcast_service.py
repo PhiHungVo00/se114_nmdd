@@ -1,6 +1,7 @@
 from app.models.BroadCast import Broadcast
 from app.models.Room import Room
 from app.models.Seat import Seat
+from app.models.Firm import Firm
 from app import db
 from app.utils.helper import format_date, format_time, format_datetime
 from datetime import timedelta, datetime
@@ -55,6 +56,14 @@ def create_broadcast(room_id, firm_id, time_broadcast, date_broadcast, price, se
 
     time_broadcast = format_time(time_broadcast)
     date_broadcast = format_date(date_broadcast)
+
+    firm = Firm.query.filter_by(ID=firm_id, is_delete=False).first()
+    if not firm:
+        raise ValueError("Firm not found or is deleted")
+    if firm.start_date > date_broadcast:
+        raise ValueError("Broadcast date is outside the firm's active period")
+
+
     print(f"Formatted time: {time_broadcast}, Formatted date: {date_broadcast}")
     if is_broadcast_time_conflict(room_id, time_broadcast, date_broadcast):
         raise ValueError("Broadcast time conflicts with existing broadcasts in the room")

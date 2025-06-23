@@ -247,29 +247,29 @@ public class AdminActivityListBroadcast extends AppCompatActivity {
         ApiBroadcastService apiBroadcastService = ApiClient.getRetrofit().create(ApiBroadcastService.class);
         Call<StatusMessage> call = apiBroadcastService.deleteBroadcast("Bearer " + accessToken, broadcastFirm.getID());
         call.enqueue(
-                new Callback<StatusMessage>() {
-                    @Override
-                    public void onResponse(@NonNull Call<StatusMessage> call, @NonNull Response<StatusMessage> response) {
-                        if (response.isSuccessful() && response.body() != null) {
-                            StatusMessage statusMessage = response.body();
-                            if (response.code() == 200) {
-                                Toast.makeText(AdminActivityListBroadcast.this, "Xóa lịch chiếu thành công", Toast.LENGTH_SHORT).show();
-                                // Remove the broadcast from the list and notify the adapter
-                                broadcastFirmList.remove(broadcastFirm);
-                                broadCastFirmAdapter.notifyDataSetChanged();
-                            } else {
-                                Toast.makeText(AdminActivityListBroadcast.this, "Lỗi: " + statusMessage.getMessage(), Toast.LENGTH_SHORT).show();
-                            }
+            new Callback<StatusMessage>() {
+                @Override
+                public void onResponse(@NonNull Call<StatusMessage> call, @NonNull Response<StatusMessage> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        StatusMessage statusMessage = response.body();
+                        if (response.code() == 200) {
+                            Toast.makeText(AdminActivityListBroadcast.this, "Xóa lịch chiếu thành công", Toast.LENGTH_SHORT).show();
+                            // Remove the broadcast from the list and notify the adapter
+                            broadcastFirmList.remove(broadcastFirm);
+                            broadCastFirmAdapter.notifyDataSetChanged();
                         } else {
-                            Toast.makeText(AdminActivityListBroadcast.this, "Không thể xóa lịch chiếu", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(AdminActivityListBroadcast.this, "Lỗi: " + statusMessage.getMessage(), Toast.LENGTH_SHORT).show();
                         }
-                    }
-
-                    @Override
-                    public void onFailure(@NonNull Call<StatusMessage> call, @NonNull Throwable t) {
-                        Toast.makeText(AdminActivityListBroadcast.this, "Lỗi: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(AdminActivityListBroadcast.this, "Không thể xóa lịch chiếu", Toast.LENGTH_SHORT).show();
                     }
                 }
+
+                @Override
+                public void onFailure(@NonNull Call<StatusMessage> call, @NonNull Throwable t) {
+                    Toast.makeText(AdminActivityListBroadcast.this, "Lỗi: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
         );
 
     }
