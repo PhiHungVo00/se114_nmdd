@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.google.services)
 }
 
 android {
@@ -48,4 +49,6 @@ dependencies {
     annotationProcessor ("com.github.bumptech.glide:compiler:4.16.0")
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
     implementation("com.google.android.material:material:1.11.0")
+    implementation ("com.google.firebase:firebase-storage:20.3.0")
+    implementation ("com.google.firebase:firebase-auth:22.3.0")
 }

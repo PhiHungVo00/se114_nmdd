@@ -131,7 +131,7 @@ def get_all_broadcasts_for_firm(firm_id, date_broadcast=None):
     ).order_by(Broadcast.dateBroadcast, Broadcast.timeBroadcast).all()
     if date_broadcast:
         broadcasts = broadcasts.filter(Broadcast.dateBroadcast == date_broadcast)
-    return broadcasts.all()
+    return broadcasts
 
 
 

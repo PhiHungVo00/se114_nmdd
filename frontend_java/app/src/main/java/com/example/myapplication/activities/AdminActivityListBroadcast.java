@@ -84,6 +84,19 @@ public class AdminActivityListBroadcast extends AppCompatActivity {
 
         // Thiết lập adapter click listener
 
+        setBroadCastAdapterClickListener();
+
+
+        //        Listeners
+        setLaucherCreateBroadcast();
+        setCalendarListener();
+        setSearchCalandarListener();
+        setBackButtonListener();
+        setAddBroadcastListener();
+    }
+
+//    Listener adapter click listener for the broadcast list
+    void setBroadCastAdapterClickListener() {
         broadCastFirmAdapter.setOnItemClickListener(
             new BroadCastFirmAdapter.OnItemClickListener() {
                 @Override
@@ -95,20 +108,13 @@ public class AdminActivityListBroadcast extends AppCompatActivity {
 
                 @Override
                 public void onDeleteClick(BroadcastFirm broadcastFirm) {
-                    // Handle delete click if needed
                     AlertDeleteBroadcast(broadcastFirm);
                 }
             }
         );
-
-
-        //        Listeners
-        setLaucherCreateBroadcast();
-        setCalendarListener();
-        setSearchCalandarListener();
-        setBackButtonListener();
-        setAddBroadcastListener();
     }
+
+
 
     //    Listener for the calendar text view
     private void  setCalendarListener() {
