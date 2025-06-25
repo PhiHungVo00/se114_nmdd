@@ -76,7 +76,7 @@ public class UserMainActivity extends AppCompatActivity {
 //        thiết  lập sự kiện adapter
         firmShowAdapter.setOnItemClickListener(new FirmShowAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(FirmShow firmShow) {
+            public void onItemClick(FirmShow firmShow, int position) {
                 Intent intent = new Intent(UserMainActivity.this, UserDetailFirm.class);
                 intent.putExtra("firm_id", firmShow.getId());
                 startActivity(intent);

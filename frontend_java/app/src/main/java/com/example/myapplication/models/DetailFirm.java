@@ -1,10 +1,13 @@
 package com.example.myapplication.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class DetailFirm {
+public class DetailFirm implements Parcelable {
 
     @SerializedName("ID")
     private int id;
@@ -37,6 +40,75 @@ public class DetailFirm {
     @SerializedName("Runtime")
     private Integer runtime;
 // Getters
+
+    protected DetailFirm(Parcel in) {
+        id = in.readInt();
+        name = in.readString();
+        startDate = in.readString();
+        endDate = in.readString();
+        description = in.readString();
+        if (in.readByte() == 0) {
+            rating = null;
+        } else {
+            rating = in.readDouble();
+        }
+        if (in.readByte() == 0) {
+            ratingCount = null;
+        } else {
+            ratingCount = in.readInt();
+        }
+        thumbnailPath = in.readString();
+        if (in.readByte() == 0) {
+            runtime = null;
+        } else {
+            runtime = in.readInt();
+        }
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(name);
+        dest.writeString(startDate);
+        dest.writeString(endDate);
+        dest.writeString(description);
+        if (rating == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeDouble(rating);
+        }
+        if (ratingCount == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeInt(ratingCount);
+        }
+        dest.writeString(thumbnailPath);
+        if (runtime == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeInt(runtime);
+        }
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<DetailFirm> CREATOR = new Creator<DetailFirm>() {
+        @Override
+        public DetailFirm createFromParcel(Parcel in) {
+            return new DetailFirm(in);
+        }
+
+        @Override
+        public DetailFirm[] newArray(int size) {
+            return new DetailFirm[size];
+        }
+    };
 
     public int getId() {
         return id;

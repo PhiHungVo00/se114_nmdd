@@ -19,7 +19,7 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent">
 
                 <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/sliderViewPager"
@@ -271,36 +271,53 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnBroadcast"
+                <LinearLayout
+                    android:id="@+id/buttonLayout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
                     android:layout_margin="@dimen/_8sdp"
-                    android:backgroundTint="@android:color/holo_purple"
-                    android:fontFamily="@font/ubuntu_medium"
-                    android:includeFontPadding="false"
-                    android:text="Broadcast"
-                    android:textColor="@color/colorTextIcons"
-                    android:textSize="@dimen/_12sdp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/viewPivot"
-                    app:layout_constraintTop_toBottomOf="@+id/viewDivider2" />
+                    app:layout_constraintTop_toBottomOf="@id/viewDivider2"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnUpdate"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/colorAccent"
+                        android:text="Update"
+                        android:textColor="@color/colorTextIcons"
+                        android:textSize="@dimen/_12sdp"/>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnBroadcast"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_30sdp"
+                        android:backgroundTint="@android:color/holo_purple"
+                        android:text="Broadcast"
+                        android:textColor="@color/colorTextIcons"
+                        android:textSize="@dimen/_12sdp"/>
+                </LinearLayout>
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnUpdate"
+                    android:id="@+id/btnDelete"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_8sdp"
-                    android:backgroundTint="@color/colorAccent"
-                    android:fontFamily="@font/ubuntu_medium"
-                    android:includeFontPadding="false"
-                    android:text="Update"
+                    android:backgroundTint="@android:color/holo_red_light"
+                    android:text="Delete"
+                    android:textColor="@color/colorTextIcons"
                     android:textSize="@dimen/_12sdp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="@+id/viewPivot"
+                    app:layout_constraintTop_toBottomOf="@id/buttonLayout"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/viewDivider2" />
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
+
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

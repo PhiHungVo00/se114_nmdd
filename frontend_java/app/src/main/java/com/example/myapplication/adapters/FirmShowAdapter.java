@@ -37,7 +37,7 @@ public class FirmShowAdapter extends RecyclerView.Adapter<FirmShowAdapter.FirmSh
 
 
     public interface OnItemClickListener {
-        void onItemClick(FirmShow firmShow);
+        void onItemClick(FirmShow firmShow, int position);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class FirmShowAdapter extends RecyclerView.Adapter<FirmShowAdapter.FirmSh
 //            v.getContext().startActivity(intent);
 
             if (listener != null) {
-                listener.onItemClick(firmShow);
+                listener.onItemClick(firmShow, position);
             }
         });
 

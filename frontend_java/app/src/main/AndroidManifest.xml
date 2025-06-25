@@ -103,6 +103,9 @@
         <activity
             android:name=".activities.AdminActivityCreateBroadcast"
             android:exported="false" />
+        <activity
+            android:name=".activities.AdminActivityCreateNewFirm"
+            android:exported="false" />
     </application>
 
 </manifest>

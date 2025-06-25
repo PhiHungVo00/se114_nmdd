@@ -39,6 +39,7 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation ("com.intuit.sdp:sdp-android:1.1.0")
+    implementation(libs.firebase.firestore)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -51,4 +52,5 @@ dependencies {
     implementation("com.google.android.material:material:1.11.0")
     implementation ("com.google.firebase:firebase-storage:20.3.0")
     implementation ("com.google.firebase:firebase-auth:22.3.0")
+    implementation ("com.squareup.okhttp3:okhttp:4.10.0")
 }
