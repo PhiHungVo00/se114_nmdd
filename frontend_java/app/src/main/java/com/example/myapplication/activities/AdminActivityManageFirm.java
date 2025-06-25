@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,6 +34,9 @@ import retrofit2.Response;
 
 public class AdminActivityManageFirm extends AppCompatActivity {
     String accessToken;
+    private final int ADD_FIRM_REQUEST_CODE = 4; // Assuming this is the code for adding a firm
+    private final int UPDATE_FIRM_REQUEST_CODE = 5; // Assuming this is the code for updating a firm
+    private final int DELETE_FIRM_REQUEST_CODE = 6; // Assuming this is the code for deleting a firm
 
     ImageView imageHome, imageManageFirm, imageManageUser, imageManageRoom, imageUser;
     ImageView imageSearch;
@@ -56,6 +60,8 @@ public class AdminActivityManageFirm extends AppCompatActivity {
         setContentView(R.layout.admin_acivity_manage_firm);
         setElementsByID();
         accessToken = getSharedPreferences("MyAppPrefs", MODE_PRIVATE).getString("access_token", null);
+        setLauncherAddFirm();
+        setLauncherDetailFirm();
 
         mListFirmShows = new ArrayList<>();
         // Set up the RecyclerView and Adapter
@@ -77,20 +83,13 @@ public class AdminActivityManageFirm extends AppCompatActivity {
         // Set up click listener for firm items
         firmShowAdapter.setOnItemClickListener(new FirmShowAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(FirmShow firmShow) {
+            public void onItemClick(FirmShow firmShow, int position) {
                 Intent intent = new Intent(AdminActivityManageFirm.this, AdminDetailFirm.class);
                 intent.putExtra("firm_id", firmShow.getId());
-                startActivity(intent);
+                intent.putExtra("position", position); // Pass the position for updates/deletes
+                launcherDetailFirm.launch(intent);
             }
         });
-
-        // Set up click listener for adding a new firm
-//        fabAddFirm.setOnClickListener(v -> {
-//            Intent intent = new Intent(AdminActivityManageFirm.this, AdminActivityAddFirm.class);
-//            launcherAddFirm.launch(intent);
-//        });
-
-
 
     }
 
@@ -130,6 +129,8 @@ public class AdminActivityManageFirm extends AppCompatActivity {
             Intent intent = new Intent(AdminActivityManageFirm.this, AdminActivityProfile.class);
             startActivity(intent);
         });
+
+        ListenerAddFirm();
     }
 
 
@@ -226,6 +227,65 @@ public class AdminActivityManageFirm extends AppCompatActivity {
         if (filteredList.isEmpty()) {
             Toast.makeText(this, "Không tìm thấy kết quả", Toast.LENGTH_SHORT).show();
         }
+    }
+
+
+//    Set up the ActivityResultLauncher for detail firm activity
+    private void setLauncherDetailFirm(){
+        launcherDetailFirm = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == UPDATE_FIRM_REQUEST_CODE) { // Assuming 5 is the code for successful update
+                        Intent data = result.getData();
+                        if (data != null) {
+                            FirmShow updatedFirm = (FirmShow) data.getSerializableExtra("updated_firm");
+                            if (updatedFirm != null) {
+                                int position = data.getIntExtra("position", -1);
+                                if (position >= 0 && position < mListFirmShows.size()) {
+                                    mListFirmShows.set(position, updatedFirm);
+                                    firmShowAdapter.notifyItemChanged(position);
+                                    Toast.makeText(AdminActivityManageFirm.this, "Cập nhật phim thành công", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }
+                    } else if (result.getResultCode() == DELETE_FIRM_REQUEST_CODE) { // Assuming 6 is the code for successful deletion
+                        Intent data = result.getData();
+                        int position = data != null ? data.getIntExtra("position", -1) : -1;
+                        String message = data != null ? data.getStringExtra("status") : null;
+                        if (position >= 0 && position < mListFirmShows.size()) {
+                            mListFirmShows.remove(position);
+                            firmShowAdapter.notifyItemRemoved(position);
+                            Toast.makeText(AdminActivityManageFirm.this, message, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
+
+
+    // Listener for adding a new firm
+    private void setLauncherAddFirm(){
+        launcherAddFirm = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == ADD_FIRM_REQUEST_CODE) { // Assuming 4 is the code for successful addition
+                        Intent data = result.getData();
+                        if (data != null) {
+                            FirmShow newFirm = (FirmShow) data.getSerializableExtra("new_firm");
+                            if (newFirm != null) {
+                                mListFirmShows.add(newFirm);
+                                firmShowAdapter.notifyItemInserted(mListFirmShows.size() - 1);
+                                Toast.makeText(AdminActivityManageFirm.this, "Thêm phim mới thành công", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+                });
+    }
+    private void ListenerAddFirm(){
+        fabAddFirm.setOnClickListener(v -> {
+           Intent intent = new Intent(AdminActivityManageFirm.this, AdminActivityCreateNewFirm.class);
+            launcherAddFirm.launch(intent);
+        });
     }
 
 }
