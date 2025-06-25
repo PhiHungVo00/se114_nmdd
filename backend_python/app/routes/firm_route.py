@@ -86,7 +86,7 @@ def create_new_firm():
             rating_count=data.get('rating_count', 0),
             images=data.get('images', [])
         )
-        return jsonify(firm.serialize_detail()), 201
+        return jsonify(firm.serialize()), 201
     except ValueError as e:
         return jsonify({'message': str(e)}), 400
     

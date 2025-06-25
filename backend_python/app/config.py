@@ -16,5 +16,3 @@ CORS_SUPPORTS_CREDENTIALS = True
 # cho phép tất cả các nguồn gốc truy cập
 CORS_ORIGINS = ['*']  
 CORS_METHODS = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']  # Các phương thức HTTP được phép
-
-UPLOAD_FOLDER = 'uploads'

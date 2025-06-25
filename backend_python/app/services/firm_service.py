@@ -87,6 +87,8 @@ def delete_firm(firm_id):
     firm = get_firm_by_id(firm_id)
     if not firm:
         raise ValueError("Firm not found")
+    if firm.broadcasts:
+        raise ValueError("Cannot delete firm with existing broadcasts")
 
     firm.is_delete = True
     try:
