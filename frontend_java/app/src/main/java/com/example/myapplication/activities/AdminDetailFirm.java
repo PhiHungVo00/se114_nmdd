@@ -10,6 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -18,6 +19,7 @@ import com.example.myapplication.R;
 import com.example.myapplication.adapters.ImageFirmAdapter;
 import com.example.myapplication.models.DetailFirm;
 import com.example.myapplication.models.ImageFirm;
+import com.example.myapplication.models.StatusMessage;
 import com.example.myapplication.network.ApiClient;
 import com.example.myapplication.network.ApiFirmService;
 
@@ -29,7 +31,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class AdminDetailFirm extends AppCompatActivity {
+    private final int DELETE_FIRM_REQUEST_CODE = 6;
     String accessToken;
+    int position = 0; // Current position in the ViewPager
     private DetailFirm detailFirm;
     private ImageFirmAdapter imageAdapter;
     private ViewPager2 viewPager;
@@ -39,7 +43,7 @@ public class AdminDetailFirm extends AppCompatActivity {
     TextView textReadMore;
     TextView textRuntime;
     Button btnBroadcast;
-    Button btnUpdate;
+    Button btnUpdate, btnDelete;
 
     @Override
     protected void onCreate(android.os.Bundle savedInstanceState) {
@@ -57,11 +61,13 @@ public class AdminDetailFirm extends AppCompatActivity {
 
         // get the firm ID from the intent
         int firmId = getIntent().getIntExtra("firm_id", -1);
+        position = getIntent().getIntExtra("position", -1); // Get the position if needed
 
 
         // Set up listeners for the back button and read more description
         ListenerSetupBackButton();
         ListenerReadMoreDescription();
+        ListenerDeleteButton();
 
         // Log the received firm ID for debugging
 
@@ -93,6 +99,7 @@ public class AdminDetailFirm extends AppCompatActivity {
         textRuntime = findViewById(R.id.textRuntime);
         btnBroadcast = findViewById(R.id.btnBroadcast);
         btnUpdate = findViewById(R.id.btnUpdate);
+        btnDelete = findViewById(R.id.btnDelete);
     }
 
     private void loadFirmDetail(String id) {
@@ -177,5 +184,63 @@ public class AdminDetailFirm extends AppCompatActivity {
             intent.putExtra("firmId", firmId);
             startActivity(intent);
         });
+    }
+
+//    Listeners for update and delete buttons
+//    public void ListenerUpdateButton() {
+//        btnUpdate.setOnClickListener(v -> {
+//            Intent intent = new Intent(AdminDetailFirm.this, AdminActivityUpdateFirm.class);
+//            intent.putExtra("firm_id", detailFirm.getId());
+//            startActivity(intent);
+//        });
+//    }
+
+    public void ListenerDeleteButton() {
+        btnDelete.setOnClickListener(v -> {
+            AlertDeleteFirm();
+        });
+    }
+    void AlertDeleteFirm() {
+        new AlertDialog.Builder(AdminDetailFirm.this)
+                .setTitle("Xác nhận Xóa phim")
+                .setMessage("Bạn có chắc chắn muốn xóa không?")
+                .setPositiveButton("Chắc chắn", (dialog, which) -> {
+                    // Xử lý xóa phòng
+                    DeleteFirmByApi();
+                })
+                .setNegativeButton("Hủy", (dialog, which) -> {
+                    dialog.dismiss(); // Đóng dialog nếu chọn Cancel
+                })
+                .show();
+    }
+
+    void DeleteFirmByApi(){
+            ApiFirmService apiFirmService = ApiClient.getRetrofit().create(ApiFirmService.class);
+            Call<StatusMessage> call = apiFirmService.deleteFirm("Bearer " + accessToken, detailFirm.getId());
+            call.enqueue(
+                    new Callback<StatusMessage>() {
+                        @Override
+                        public void onResponse(@NonNull Call<StatusMessage> call, @NonNull Response<StatusMessage> response) {
+                            if (response.isSuccessful() && response.body() != null) {
+                                StatusMessage statusMessage = response.body();
+                                Intent intent = new Intent();
+                                intent.putExtra("position", position);
+                                intent.putExtra("status", statusMessage.getMessage());
+                                setResult(DELETE_FIRM_REQUEST_CODE, intent);
+                                finish();
+
+                            } else {
+                                Toast.makeText(AdminDetailFirm.this, "Failed to delete firm: "+ response.message(), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(@NonNull Call<StatusMessage> call, @NonNull Throwable t) {
+                            Toast.makeText(AdminDetailFirm.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                            Log.e("API_ERROR", Objects.requireNonNull(t.getMessage()));
+                        }
+                    }
+            );
+
     }
 }
