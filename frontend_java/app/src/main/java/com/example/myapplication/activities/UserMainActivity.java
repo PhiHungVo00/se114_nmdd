@@ -10,6 +10,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -22,9 +23,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
 import com.example.myapplication.adapters.FirmShowAdapter;
+import com.example.myapplication.models.FirmIdBroadcastToday;
 import com.example.myapplication.models.FirmShow;
 import com.example.myapplication.network.ApiClient;
 import com.example.myapplication.network.ApiFirmService;
+import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +38,7 @@ import retrofit2.Response;
 
 public class UserMainActivity extends AppCompatActivity {
 
-
+    String accessToken;
     private RecyclerView FirmShowsRecyclerView;
     private List <FirmShow> mListFirmShows;
     private FirmShowAdapter firmShowAdapter;
@@ -48,6 +51,8 @@ public class UserMainActivity extends AppCompatActivity {
     TextView textAppName;
     EditText editSearch;
     ImageView imageBack;
+    MaterialAutoCompleteTextView spinnerSort;
+    FirmIdBroadcastToday firmIdBroadcastToday = new FirmIdBroadcastToday(new ArrayList<>());
 
 
     @SuppressLint("MissingInflatedId")
@@ -62,7 +67,9 @@ public class UserMainActivity extends AppCompatActivity {
         textAppName = findViewById(R.id.textAppName);
         editSearch = findViewById(R.id.editSearch);
         imageBack = findViewById(R.id.imageBack);
+        spinnerSort = findViewById(R.id.spinnerSort);
 
+        accessToken = getSharedPreferences("MyAppPrefs", MODE_PRIVATE).getString("access_token", null);
 
         FirmShowsRecyclerView = findViewById(R.id.firmShowsRecyclerView);
         FirmShowsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -72,6 +79,7 @@ public class UserMainActivity extends AppCompatActivity {
 
         FirmShowsRecyclerView.setAdapter(firmShowAdapter);
         loadFirmsFromApi();
+        loadFirmIdsBroadcastToday();
 
 //        thiết  lập sự kiện adapter
         firmShowAdapter.setOnItemClickListener(new FirmShowAdapter.OnItemClickListener() {
@@ -83,15 +91,13 @@ public class UserMainActivity extends AppCompatActivity {
             }
         });
 
-        // Thiết lập sự kiện click cho các nút
-
-
-
+        setAdapterSpiner();
 //        ListenerSetupMenuButton();
         ListenerSetupMenuButton();
 
 //        ListenerSetupSearchButton();
         ListenerSetupSearchButton();
+        ListenerSpinnerClick();
 
     }
     private void loadFirmsFromApi() {
@@ -125,6 +131,30 @@ public class UserMainActivity extends AppCompatActivity {
             public void onFailure(Call<List<FirmShow>> call, Throwable t) {
                 Toast.makeText(UserMainActivity.this, "Lỗi: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                 Log.e("API_ERROR", t.getMessage());
+            }
+        });
+    }
+
+    private void loadFirmIdsBroadcastToday() {
+        ApiFirmService apiFirmService = ApiClient.getRetrofit().create(ApiFirmService.class);
+        Call<FirmIdBroadcastToday> call = apiFirmService.getFirmIdsBroadcastToday("Bearer " + accessToken);
+
+        call.enqueue(new Callback<FirmIdBroadcastToday>() {
+            @Override
+            public void onResponse(Call<FirmIdBroadcastToday> call, Response<FirmIdBroadcastToday> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    firmIdBroadcastToday = response.body();
+                    List<Integer> firmIds = firmIdBroadcastToday.getFirmIds();
+                    Log.d("UserMainActivity", "Firm IDs for today: " + firmIds);
+
+                } else {
+                    Log.e("UserMainActivity List id", "Failed to get firm IDs for today");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<FirmIdBroadcastToday> call, Throwable t) {
+                Log.e("UserMainActivity", "Error: " + t.getMessage());
             }
         });
     }
@@ -202,5 +232,84 @@ public class UserMainActivity extends AppCompatActivity {
         }
     }
 
+
+    void setAdapterSpiner(){
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                this,
+                R.array.sort_options,
+                R.layout.spinner_dropdown_item
+        );
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerSort.setAdapter(adapter);
+
+        // Optional: set listener
+        spinnerSort.setOnItemClickListener((parent, view, position, id) -> {
+            String selected = (String) parent.getItemAtPosition(position);
+            // Xử lý lọc, sắp xếp ở đây
+            Toast.makeText(this, "Bạn chọn: " + selected, Toast.LENGTH_SHORT).show();
+        });
+    }
+
+
+    void ListenerSpinnerClick(){
+        spinnerSort.setOnItemClickListener((parent, view, position, id) -> {
+            String selectedOption = (String) parent.getItemAtPosition(position);
+
+            switch (selectedOption) {
+                case "Lịch chiếu hôm nay":
+                    // Gọi hàm load phim hôm nay
+                    loadTodayShows();
+                    break;
+
+                case "Sắp xếp theo Rating ↑":
+                    // Gọi hàm sort tăng dần rating
+                    sortByRatingAsc();
+                    break;
+
+                case "Sắp xếp theo Rating ↓":
+                    // Gọi hàm sort giảm dần rating
+                    sortByRatingDesc();
+                    break;
+
+                case "Sắp xếp theo Tên A-Z":
+                    // Gọi hàm sort theo tên
+                    sortByName();
+                    break;
+            }
+
+            // Optional: Toast test
+            Toast.makeText(this, "Bạn chọn: " + selectedOption, Toast.LENGTH_SHORT).show();
+        });
+    }
+
+    void  loadTodayShows() {
+        List<FirmShow> todayShows = new ArrayList<>();
+        for (FirmShow firm : cacheFirmShows) {
+            if (firmIdBroadcastToday.getFirmIds().contains(firm.getId())) {
+                todayShows.add(firm);
+            }
+        }
+        mListFirmShows.clear();
+        mListFirmShows.addAll(todayShows);
+        firmShowAdapter.notifyDataSetChanged();
+    }
+    void sortByRatingAsc() {
+        mListFirmShows.clear();
+        mListFirmShows.addAll(cacheFirmShows);
+        mListFirmShows.sort((firm1, firm2) -> Double.compare(firm1.getRating(), firm2.getRating()));
+        firmShowAdapter.notifyDataSetChanged();
+    }
+    void sortByRatingDesc() {
+        mListFirmShows.clear();
+        mListFirmShows.addAll(cacheFirmShows);
+        mListFirmShows.sort((firm1, firm2) -> Double.compare(firm2.getRating(), firm1.getRating()));
+        firmShowAdapter.notifyDataSetChanged();
+    }
+    void sortByName() {
+        mListFirmShows.clear();
+        mListFirmShows.addAll(cacheFirmShows);
+        mListFirmShows.sort((firm1, firm2) -> firm1.getName().compareToIgnoreCase(firm2.getName()));
+        firmShowAdapter.notifyDataSetChanged();
+    }
 
 }

@@ -3,7 +3,8 @@ from app.services.firm_service import (
     get_all_firms,
     create_firm,
     update_firm,
-    delete_firm
+    delete_firm,
+    list_firmIds_broadcast_today
 )
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
@@ -115,7 +116,8 @@ def update_firm_route(firm_id):
             description=data.get('description'),
             thumbnail=data.get('thumbnail'),
             rating=data.get('rating'),
-            rating_count=data.get('rating_count')
+            rating_count=data.get('rating_count'),
+            runtime=data.get('runtime', 60)  # Default runtime is 60 seconds
         )
         return jsonify(firm.serialize()), 200
     except ValueError as e:
@@ -139,4 +141,16 @@ def delete_firm_route(firm_id):
     except ValueError as e:
         return jsonify({'message': str(e)}), 400
     except Exception as e:
-        return jsonify({'message': 'An error occurred while deleting the firm'}), 500
+        return jsonify({'message': f'An error occurred while deleting the firm: {e}'}), 500
+    
+
+# List firm IDs that have broadcasts today
+# # link: localhost:5000/api/firms/list_firmIds_broadcast_today
+@FIRM_BLUEPRINT.route('/list_firmIds_broadcast_today', methods=['GET'])
+def list_firmIds_broadcast_today_route():
+    try:
+        firm_ids = list_firmIds_broadcast_today()
+        print(firm_ids)
+        return jsonify({'firm_ids': list(firm_ids)}), 200
+    except Exception as e:
+        return jsonify({'message': f'An error occurred: {e}'}), 500

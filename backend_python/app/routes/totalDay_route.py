@@ -1,7 +1,8 @@
 from app.services.totalDayly_service import (
     refresh_total_day,
     get_total_day_by_date,
-    get_more_total_days
+    get_more_total_days,
+    create_sample_data
 )
 
 from flask import Blueprint, jsonify, request
@@ -25,12 +26,12 @@ def refresh_total_day_route():
         return jsonify({'message': 'Day, month, and year are required'}), 400
     try:
         result = refresh_total_day(day, month, year)
-        return jsonify({'message': 'Total day data refreshed successfully.'}), 200
+        return jsonify(result.serialize()), 200
     except ValueError as e:
         return jsonify({'message': str(e)}), 400
     except Exception as e:
-        return jsonify({'message': 'An error occurred while refreshing total day data.'}), 500
-    
+        return jsonify({'message': f'An error occurred while refreshing total day data: {str(e)}'}), 500
+
 
 
 # link: localhost:5000/api/total_day/get/total-day?day=1&month=1&year=2023
@@ -72,3 +73,16 @@ def get_more_total_days_route():
         return jsonify({'message': str(e)}), 400
     except Exception as e:
         return jsonify({'message': f'An error occurred while retrieving more total days: {str(e)}'}), 500
+
+
+# link: localhost:5000/api/total_day/create-sample-data
+
+@TOTAL_DAY_BLUEPRINT.route('/create-sample-data', methods=['POST'])
+# @jwt_required()
+def create_sample_data_route():
+    """Create sample data for total days."""
+    try:
+        create_sample_data()
+        return jsonify({'message': 'Sample data created successfully.'}), 200
+    except Exception as e:
+        return jsonify({'message': f'An error occurred while creating sample data: {str(e)}'}), 500

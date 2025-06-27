@@ -33,7 +33,7 @@ public interface ApiRevenueService {
     );
 
     @POST("total_day/refresh")
-    Call<StatusMessage> refreshTotalDay(
+    Call<RevenueDay> refreshTotalDay(
             @Header("Authorization") String token,
             @Query("day") String day,
             @Query("month") String month,

@@ -56,10 +56,33 @@ public class AdminActivityUpdateFirm extends AppCompatActivity {
         setPickImageLauncher();
         firmId = getIntent().getIntExtra("firm_id", -1);
         String thumbnailUrl = getIntent().getStringExtra("thumbnail_url");
+
+        /*
+        intent.putExtra("name", detailFirm.getName());
+            intent.putExtra("description", detailFirm.getDescription());
+            intent.putExtra("rating", detailFirm.getRating());
+            intent.putExtra("rating_count", detailFirm.getRatingCount());
+            intent.putExtra("runtime", detailFirm.getRuntime());
+         */
+        String name = getIntent().getStringExtra("name");
+        String description = getIntent().getStringExtra("description");
+        double rating = getIntent().getDoubleExtra("rating", 0.0);
+        int ratingCount = getIntent().getIntExtra("rating_count", 0);
+        int runningTime = getIntent().getIntExtra("runtime", 0);
+
+
+
         Glide.with(this)
                         .load(thumbnailUrl)
                         .error(R.drawable.default_img)
                         .into(imageThumbnail);
+        editFirmName.setText(name);
+        editDescription.setText(description);
+        editRunningTime.setText(String.valueOf(runningTime));
+        editRating.setText(String.valueOf(rating));
+        editRatingCount.setText(String.valueOf(ratingCount));
+
+
         imageThumbnail.setOnClickListener(v -> {
             pickImageLauncher.launch("image/*");
         });

@@ -3,12 +3,14 @@ package com.example.myapplication.activities;
 import static android.graphics.Color.*;
 
 import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -49,6 +51,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,7 +70,8 @@ public class AdminMainActivity extends AppCompatActivity {
 
     private Map<String, List<Float>> weeklyRevenue = new HashMap<>();
     LineChart lineChart;
-    TextView tvRevenueToday, tvDateRange;
+    TextView tvRevenueToday, tvDateRange, tvTotalTickets;
+    Button btnStartDate, btnEndDate;
     ImageView imageHistory, imageHome, imageManageUser, imageManageFirm, imageProfile, imageRefresh, imageManageRoom;
 
 
@@ -83,7 +87,7 @@ public class AdminMainActivity extends AppCompatActivity {
         accessToken = getSharedPreferences("MyAppPrefs", MODE_PRIVATE).getString("access_token", null);
 
         // load     api revenue
-        loadApiRevenueOneweekLastest();
+        refreshRevenueDay();
 
 
         // listen menu button
@@ -128,6 +132,40 @@ public class AdminMainActivity extends AppCompatActivity {
                 }
         );
 
+        btnStartDate.setOnClickListener(v -> {
+            Calendar calendar = Calendar.getInstance();
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH);
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+            DatePickerDialog datePickerDialog = new DatePickerDialog(
+                    this,
+                    (view, selectedYear, selectedMonth, selectedDay) -> {
+                        String selectedDate = String.format("%04d-%02d-%02d", selectedYear, selectedMonth + 1, selectedDay);
+                        btnStartDate.setText(selectedDate);
+                    },
+                    year, month, day
+            );
+            datePickerDialog.show();
+        });
+
+        btnEndDate.setOnClickListener(v -> {
+            Calendar calendar = Calendar.getInstance();
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH);
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+            DatePickerDialog datePickerDialog = new DatePickerDialog(
+                    this,
+                    (view, selectedYear, selectedMonth, selectedDay) -> {
+                        String selectedDate = String.format("%04d-%02d-%02d", selectedYear, selectedMonth + 1, selectedDay);
+                        btnEndDate.setText(selectedDate);
+                    },
+                    year, month, day
+            );
+            datePickerDialog.show();
+        });
+
 
 
     }
@@ -139,10 +177,13 @@ public class AdminMainActivity extends AppCompatActivity {
         imageManageUser = findViewById(R.id.imageManageUser);
         imageProfile = findViewById(R.id.imageProfile);
         lineChart = findViewById(R.id.lineChart);
-        tvRevenueToday = findViewById(R.id.tvRevenueToday);
+        tvRevenueToday = findViewById(R.id.tvTotalRevenue);
         tvDateRange = findViewById(R.id.tvDateRange);
         imageRefresh = findViewById(R.id.imageRefresh);
         imageManageRoom = findViewById(R.id.imageManageRoom);
+        btnStartDate = findViewById(R.id.btnStartDate);
+        btnEndDate = findViewById(R.id.btnEndDate);
+        tvTotalTickets = findViewById(R.id.tvTotalTickets);
     }
 
 
@@ -154,8 +195,13 @@ public class AdminMainActivity extends AppCompatActivity {
 
     void loadApiRevenueOneweekLastest(){
         String token = "Bearer " + accessToken;
-        String todayStr = today.format(formatter);
-        String oneWeekAgoStr = oneWeekAgo.format(formatter);
+        String todayStr = btnEndDate.getText().toString().trim();
+        String oneWeekAgoStr = btnStartDate.getText().toString().trim();
+        if (!isFormatDate(todayStr) || !isFormatDate(oneWeekAgoStr)) {
+            // Nếu định dạng ngày không hợp lệ, sử dụng ngày mặc định
+            todayStr = today.format(formatter);
+            oneWeekAgoStr = oneWeekAgo.format(formatter);
+        }
 
         ApiRevenueService apiRevenueService = ApiClient.getRetrofit().create(ApiRevenueService.class);
         Call<List<RevenueDay>> call = apiRevenueService.getMoreTotalDays(token, oneWeekAgoStr, todayStr);
@@ -177,10 +223,11 @@ public class AdminMainActivity extends AppCompatActivity {
                     // Add new data
                     revenueDays.addAll(response.body());
                     // Update the TextView with today's revenue
+                    int size = revenueDays.size();
 
-                    tvRevenueToday.setText(String.valueOf(revenueDays.get(6).getTotalMoney()) + " VNĐ");
+
                     // Update the date range TextView
-                    tvDateRange.setText("Revenue from "  + revenueDays.get(0).getDate() + "/" + revenueDays.get(0).getMonth() +" to "+ revenueDays.get(6).getDate() + "/" + revenueDays.get(6).getMonth());
+                    tvDateRange.setText("Revenue from "  + revenueDays.get(0).getDate() + "/" + revenueDays.get(0).getMonth() +" to "+ revenueDays.get(size-1).getDate() + "/" + revenueDays.get(size-1).getMonth());
                     showLineChart();
                 } else {
                     Log.e("API_ERROR", "Response error: " + response.code());
@@ -257,18 +304,22 @@ public class AdminMainActivity extends AppCompatActivity {
 
 
 
-    private  void  refreshRevenueDay(){
+    private void refreshRevenueDay(){
         String token = "Bearer " + accessToken;
         String day = String.valueOf(today.getDayOfMonth());
         String month = String.valueOf(today.getMonthValue());
         String year = String.valueOf(today.getYear());
         ApiRevenueService apiRevenueService = ApiClient.getRetrofit().create(ApiRevenueService.class);
-        Call<StatusMessage> call = apiRevenueService.refreshTotalDay(token, day, month, year);
-        call.enqueue(new Callback<StatusMessage>() {
+        Call<RevenueDay> call = apiRevenueService.refreshTotalDay(token, day, month, year);
+        call.enqueue(new Callback<RevenueDay>() {
+            @SuppressLint("SetTextI18n")
             @Override
-            public void onResponse(Call<StatusMessage> call, retrofit2.Response<StatusMessage> response) {
+            public void onResponse(Call<RevenueDay> call, retrofit2.Response<RevenueDay> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     Log.d("API_RESPONSE", "Refresh revenue day successful: " + response.code());
+                    RevenueDay refreshedRevenueDay = response.body();
+                    tvRevenueToday.setText(String.valueOf(refreshedRevenueDay.getTotalMoney()) + " VNĐ");
+                    tvTotalTickets.setText(String.valueOf(refreshedRevenueDay.getTotalTickets()));
                     // Cập nhật lại dữ liệu doanh thu hôm nay
                     loadApiRevenueOneweekLastest();
                 } else {
@@ -277,12 +328,18 @@ public class AdminMainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<StatusMessage> call, Throwable t) {
+            public void onFailure(Call<RevenueDay> call, Throwable t) {
                 Log.e("API_ERROR", "Error refreshing revenue day: " + t.getMessage());
             }
         });
 
     }
 
+
+    Boolean isFormatDate(String date) {
+        // Kiểm tra định dạng ngày tháng năm
+        String regex = "\\d{4}-\\d{2}-\\d{2}";
+        return date.matches(regex);
+    }
 
 }

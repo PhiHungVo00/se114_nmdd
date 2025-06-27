@@ -106,6 +106,9 @@
         <activity
             android:name=".activities.AdminActivityCreateNewFirm"
             android:exported="false" />
+        <activity
+            android:name=".activities.AdminActivityUpdateFirm"
+            android:exported="false" />
     </application>
 
 </manifest>

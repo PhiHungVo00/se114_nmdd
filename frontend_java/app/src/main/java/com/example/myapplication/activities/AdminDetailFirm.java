@@ -1,6 +1,7 @@
 package com.example.myapplication.activities;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.view.View;
@@ -9,9 +10,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityOptionsCompat;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
@@ -34,6 +40,7 @@ public class AdminDetailFirm extends AppCompatActivity {
     private final int DELETE_FIRM_REQUEST_CODE = 6;
     String accessToken;
     int position = 0; // Current position in the ViewPager
+    ActivityResultLauncher<Intent> updateFirmLauncher;
     private DetailFirm detailFirm;
     private ImageFirmAdapter imageAdapter;
     private ViewPager2 viewPager;
@@ -58,6 +65,7 @@ public class AdminDetailFirm extends AppCompatActivity {
         }
 
         setElementsByID();
+        setUpdateFirmLauncher();
 
         // get the firm ID from the intent
         int firmId = getIntent().getIntExtra("firm_id", -1);
@@ -100,6 +108,8 @@ public class AdminDetailFirm extends AppCompatActivity {
         btnBroadcast = findViewById(R.id.btnBroadcast);
         btnUpdate = findViewById(R.id.btnUpdate);
         btnDelete = findViewById(R.id.btnDelete);
+
+        ListenerUpdateButton();
     }
 
     private void loadFirmDetail(String id) {
@@ -186,14 +196,51 @@ public class AdminDetailFirm extends AppCompatActivity {
         });
     }
 
+
+
+
+
 //    Listeners for update and delete buttons
-//    public void ListenerUpdateButton() {
-//        btnUpdate.setOnClickListener(v -> {
-//            Intent intent = new Intent(AdminDetailFirm.this, AdminActivityUpdateFirm.class);
-//            intent.putExtra("firm_id", detailFirm.getId());
-//            startActivity(intent);
-//        });
-//    }
+
+    private void setUpdateFirmLauncher(){
+        updateFirmLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result ->{
+                    if (result.getResultCode() == RESULT_OK) {
+                        // Handle the result from the update activity
+                        Intent data = result.getData();
+                        if (data != null) {
+                            int firmId = data.getIntExtra("firm_id", -1);
+                            String status = data.getStringExtra("status");
+                            if (firmId != -1 && status != null) {
+                                // Reload the firm details after update
+                                loadFirmDetail(String.valueOf(firmId));
+                                Toast.makeText(AdminDetailFirm.this, "Cập nhật thành công: " + status, Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(AdminDetailFirm.this, "Cập nhật không thành công", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+                }
+        );
+    }
+
+
+    public void ListenerUpdateButton() {
+        btnUpdate.setOnClickListener(v -> {
+            Intent intent = new Intent(AdminDetailFirm.this, AdminActivityUpdateFirm.class);
+            intent.putExtra("firm_id", detailFirm.getId());
+            intent.putExtra("thumbnail_url", detailFirm.getThumbnailPath());
+            intent.putExtra("name", detailFirm.getName());
+            intent.putExtra("description", detailFirm.getDescription());
+            intent.putExtra("rating", detailFirm.getRating());
+            intent.putExtra("rating_count", detailFirm.getRatingCount());
+            intent.putExtra("runtime", detailFirm.getRuntime());
+
+
+            updateFirmLauncher.launch(intent);
+        });
+    }
 
     public void ListenerDeleteButton() {
         btnDelete.setOnClickListener(v -> {
@@ -230,13 +277,14 @@ public class AdminDetailFirm extends AppCompatActivity {
                                 finish();
 
                             } else {
-                                Toast.makeText(AdminDetailFirm.this, "Failed to delete firm: "+ response.message(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(AdminDetailFirm.this, "Phim có lịch chiếu không thể xóa", Toast.LENGTH_SHORT).show();
+                                Log.e("API_ERROR", "Response code: " + response.code() + ", message: " + response.message());
                             }
                         }
 
                         @Override
                         public void onFailure(@NonNull Call<StatusMessage> call, @NonNull Throwable t) {
-                            Toast.makeText(AdminDetailFirm.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(AdminDetailFirm.this, "Phim có lịch chiếu không thể xóa", Toast.LENGTH_SHORT).show();
                             Log.e("API_ERROR", Objects.requireNonNull(t.getMessage()));
                         }
                     }

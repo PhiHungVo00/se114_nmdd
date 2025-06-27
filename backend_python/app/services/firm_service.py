@@ -1,6 +1,8 @@
 from app.models.Firm import Firm
 from app.models.ImageFirm import ImageFirm
+from app.models.BroadCast import Broadcast
 from app import db
+from datetime import datetime
 
 
 
@@ -56,7 +58,7 @@ def create_firm(name, description, thumbnail, start_date=None, end_date=None, ra
     return new_firm
 
 
-def update_firm(firm_id, name=None, description=None, thumbnail=None, rating=None, rating_count=None):
+def update_firm(firm_id, name=None, description=None, thumbnail=None, rating=None, rating_count=None, runtime=None):
     """Update an existing firm."""
     firm = get_firm_by_id(firm_id)
     if not firm:
@@ -67,11 +69,13 @@ def update_firm(firm_id, name=None, description=None, thumbnail=None, rating=Non
     if description:
         firm.description = description
     if thumbnail:
-        firm.thumbnail = thumbnail
+        firm.thumbnail_path = thumbnail
     if rating:
         firm.rating = rating
     if rating_count:
         firm.rating_count = rating_count
+    if runtime:
+        firm.runtime = runtime
 
     try:
         db.session.commit()
@@ -87,8 +91,9 @@ def delete_firm(firm_id):
     firm = get_firm_by_id(firm_id)
     if not firm:
         raise ValueError("Firm not found")
-    if firm.broadcasts:
-        raise ValueError("Cannot delete firm with existing broadcasts")
+    broadcasts = Broadcast.query.filter(Broadcast.FirmID == firm.ID, Broadcast.is_delete == False).first()
+    if broadcasts:
+        raise ValueError("Cannot delete firm with active broadcasts")
 
     firm.is_delete = True
     try:
@@ -98,3 +103,13 @@ def delete_firm(firm_id):
         raise ValueError(f"Error deleting firm: {str(e)}")
     
     return firm
+
+
+def list_firmIds_broadcast_today():
+    today = datetime.today().date()
+    broadcasts = Broadcast.query.filter(Broadcast.dateBroadcast == today, Broadcast.is_delete == False).all()
+    list_firmIds = set()
+    for broadcast in broadcasts:
+        if broadcast.FirmID:
+            list_firmIds.add(broadcast.FirmID)
+    return list_firmIds

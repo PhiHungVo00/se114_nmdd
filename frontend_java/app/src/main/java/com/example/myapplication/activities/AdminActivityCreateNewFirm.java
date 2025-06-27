@@ -93,7 +93,6 @@ public class AdminActivityCreateNewFirm extends AppCompatActivity {
                         Glide.with(this)
                                 .load(uri)
                                 .into(imageThumbnail);
-//                        uploadToCloudinary(uri); // Upload thumbnail image to Cloudinary
                         thumbnailImageUri = uri; // Save the thumbnail image URI
                     }
                 }
@@ -103,7 +102,6 @@ public class AdminActivityCreateNewFirm extends AppCompatActivity {
                 uri -> {
                     if (uri != null) {
                         coverImageAdapter.addImage(uri);
-//                        uploadToCloudinary(uri);
                     }
                 }
         );
@@ -409,6 +407,4 @@ public class AdminActivityCreateNewFirm extends AppCompatActivity {
 
         return  true;
     }
-
-
 }

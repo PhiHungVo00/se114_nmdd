@@ -5,7 +5,7 @@ from datetime import datetime
 from sqlalchemy import extract, func
 
 
-def create_or_update_total_day(total_money, day, month, year):
+def create_or_update_total_day(total_money, total_tickets, day, month, year):
     """
     Create or update a TotalDay record.
     If a record for the given date exists, it updates the totalMoney.
@@ -18,9 +18,14 @@ def create_or_update_total_day(total_money, day, month, year):
         if total_day:
             # Update existing record
             total_day.totalMoney += total_money
+            total_day.totalTickets += total_tickets
+            if total_day.totalMoney < 0:
+                total_day.totalMoney = 0
+            if total_day.totalTickets < 0:
+                total_day.totalTickets = 0
         else:
             # Create new record
-            total_day = TotalDay(total_money=total_money, date=day, month=month, year=year)
+            total_day = TotalDay(total_money=total_money, total_tickets=total_tickets, date=day, month=month, year=year)
             db.session.add(total_day)
         
         db.session.commit()
@@ -39,7 +44,7 @@ def refresh_total_day(day=None, month=None, year=None):
     try:
         totalDay = TotalDay.query.filter_by(date=day, month=month, year=year).first()
         if not totalDay:
-            totalDay = TotalDay(0, date=day, month=month, year=year)
+            totalDay = TotalDay(0, 0, date=day, month=month, year=year)
             db.session.add(totalDay)
         totalDay.totalMoney = db.session.query(db.func.sum(Ticket.price)).filter(
             extract('day', Ticket.dateOrder) == day, 
@@ -49,6 +54,7 @@ def refresh_total_day(day=None, month=None, year=None):
         ).scalar() or 0
 
         db.session.commit()
+        return totalDay
 
     except Exception as e:
         db.session.rollback()
@@ -82,3 +88,21 @@ def get_more_total_days(start_date, end_date):
 
 
 
+def create_sample_data():
+    '''
+       các ngày từ tháng 5 đến tháng 7 đều có dữ liệu và total =0
+    '''
+    try:
+        for month in range(5, 8):
+            for day in range(1, 32):
+                if month == 5 and day > 31:
+                    break
+            if month == 6 and day > 30:
+                break
+            if month == 7 and day > 31:
+                break
+            create_or_update_total_day(total_money=0, total_tickets=0, day=day, month=month, year=2023)
+        print("Sample data created successfully.")
+    except Exception as e:
+        db.session.rollback()
+        print(f"An error occurred while creating sample data: {str(e)}")

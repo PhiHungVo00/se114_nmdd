@@ -2,4 +2,10 @@
     <string name="app_name">My Application</string>
     <string name="read_more">Read More</string>
     <string name="read_less">Read Less</string>
+    <string-array name="sort_options">
+        <item>Lịch chiếu hôm nay</item>
+        <item>Sắp xếp theo Rating ↑</item>
+        <item>Sắp xếp theo Rating ↓</item>
+        <item>Sắp xếp theo Tên A-Z</item>
+    </string-array>
 </resources>

@@ -5,12 +5,13 @@ import com.google.gson.annotations.SerializedName;
 
 /*
      {
-        "Date": 14,
-        "ID": 2,
-        "Month": 6,
-        "TotalMoney": 500000.0,
-        "Year": 2025
-    }
+    "Date": 25,
+    "ID": 17,
+    "Month": 6,
+    "TotalMoney": 300000.0,
+    "TotalTickets": 3,
+    "Year": 2025
+}
  */
 public class
 RevenueDay {
@@ -23,18 +24,22 @@ RevenueDay {
     @SerializedName("Year")
     int year;
 
+    @SerializedName("TotalTickets")
+    int TotalTickets;
+
     @SerializedName("ID")
     int ID;
 
     @SerializedName("TotalMoney")
     float TotalMoney;
 
-    public RevenueDay(int date, int month, int year, int ID, float totalMoney) {
+    public RevenueDay(int date, int month, int year, int ID, float totalMoney, int totalTickets) {
         this.date = date;
         this.month = month;
         this.year = year;
         this.ID = ID;
         TotalMoney = totalMoney;
+        TotalTickets = totalTickets;
     }
 
 //    getter
@@ -52,6 +57,9 @@ RevenueDay {
     }
     public float getTotalMoney() {
         return TotalMoney;
+    }
+    public int getTotalTickets() {
+        return TotalTickets;
     }
 
 

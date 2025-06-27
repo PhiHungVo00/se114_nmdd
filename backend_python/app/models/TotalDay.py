@@ -9,10 +9,11 @@ class TotalDay(db.Model):
     date = db.Column(db.Integer)
     month = db.Column(db.Integer)
     year = db.Column(db.Integer)
-    
+    totalTickets = db.Column(db.Integer)
 
-    def __init__(self, total_money, date, month, year):
+    def __init__(self, total_money, total_tickets, date, month, year):
         self.totalMoney = total_money
+        self.totalTickets = total_tickets
         self.date = date
         self.month = month
         self.year = year
@@ -22,6 +23,7 @@ class TotalDay(db.Model):
         return {
             'ID': self.ID,
             'TotalMoney': self.totalMoney,
+            'TotalTickets': self.totalTickets,
             'Date': self.date,
             'Month': self.month,
             'Year': self.year

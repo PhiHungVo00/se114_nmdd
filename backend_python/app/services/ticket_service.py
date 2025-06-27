@@ -30,7 +30,7 @@ def create_ticket_service(user_id, broadcast_id, seat_id):
         db.session.commit()
         # Set the seat as bought
         set_seat_bought(seat_id)
-        create_or_update_total_day(price, ticket.dateOrder.day, ticket.dateOrder.month, ticket.dateOrder.year)
+        create_or_update_total_day(price, 1, ticket.dateOrder.day, ticket.dateOrder.month, ticket.dateOrder.year)
         return get_ticket_detail_by_id_service(ticket.ID)
     except Exception as e:
         db.session.rollback()
@@ -73,7 +73,7 @@ def delete_ticket_service(ticket_id):
         
         ticket.is_delete = True
         db.session.commit()
-        create_or_update_total_day(-ticket.price, ticket.dateOrder.day, ticket.dateOrder.month, ticket.dateOrder.year)
+        create_or_update_total_day(price, 1, ticket.dateOrder.day, ticket.dateOrder.month, ticket.dateOrder.year)
         set_seat_available(ticket.SeatID)
         return {"message": "Ticket deleted successfully"}, 200
     except Exception as e:
