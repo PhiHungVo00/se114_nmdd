@@ -55,7 +55,7 @@ public class RegisterActivity extends AppCompatActivity {
                 return;
             }
 
-            registerRequest = new RegisterRequest(username, password, fullName, email, phone);
+            registerRequest = new RegisterRequest(username, password, fullName, phone, email);
             RegisterApi(registerRequest);
 
 

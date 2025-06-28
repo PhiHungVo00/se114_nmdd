@@ -73,7 +73,7 @@ def delete_ticket_service(ticket_id):
         
         ticket.is_delete = True
         db.session.commit()
-        create_or_update_total_day(price, 1, ticket.dateOrder.day, ticket.dateOrder.month, ticket.dateOrder.year)
+        create_or_update_total_day(-ticket.price, -1, ticket.dateOrder.day, ticket.dateOrder.month, ticket.dateOrder.year)
         set_seat_available(ticket.SeatID)
         return {"message": "Ticket deleted successfully"}, 200
     except Exception as e:

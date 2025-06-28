@@ -52,6 +52,12 @@ def refresh_total_day(day=None, month=None, year=None):
             extract('year', Ticket.dateOrder) == year,
             Ticket.is_delete == False
         ).scalar() or 0
+        totalDay.totalTickets = db.session.query(db.func.count(Ticket.ID)).filter(
+            extract('day', Ticket.dateOrder) == day, 
+            extract('month', Ticket.dateOrder) == month, 
+            extract('year', Ticket.dateOrder) == year,
+            Ticket.is_delete == False
+        ).scalar() or 0
 
         db.session.commit()
         return totalDay

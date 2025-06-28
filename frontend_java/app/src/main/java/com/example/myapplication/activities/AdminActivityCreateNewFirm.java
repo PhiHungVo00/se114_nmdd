@@ -25,13 +25,10 @@ import com.example.myapplication.adapters.CoverImageAdapter;
 import com.example.myapplication.models.DetailFirm;
 import com.example.myapplication.models.FirmRequest;
 import com.example.myapplication.models.FirmShow;
-import com.example.myapplication.models.ImageFirm;
-import com.example.myapplication.models.ResultImageCloudinaryResponse;
+
 import com.example.myapplication.network.ApiClient;
 import com.example.myapplication.network.ApiFirmService;
-import com.google.android.gms.common.api.Api;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
+
 
 import org.json.JSONException;
 import org.json.JSONObject;

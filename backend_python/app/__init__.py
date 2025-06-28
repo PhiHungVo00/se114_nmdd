@@ -28,5 +28,4 @@ def create_app(file_config = 'config.py'):
     app.register_blueprint(BROADCAST_BLUEPRINT, url_prefix='/api/broadcasts')
     app.register_blueprint(TICKET_BLUEPRINT, url_prefix='/api/tickets')
     app.register_blueprint(TOTAL_DAY_BLUEPRINT, url_prefix='/api/total_day')
-
     return app
