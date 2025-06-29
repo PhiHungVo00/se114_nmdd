@@ -101,6 +101,19 @@ BASE_URL=http://192.168.1.8:5000
 
 📌 Make sure to replace 192.168.1.8 with your actual local IP address (same IP where backend is running).
 
+## Account
+```bash
+- User: 
+username: user
+password: 123456
+
+- Admin
+username: admin
+password: admin
+```
+
+
+
 ✅ Notes
 Ensure the database is created before running the backend.
 
