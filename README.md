@@ -1,4 +1,4 @@
-# CINEAI - App booking cinema ticket
+# CINESTREAM - App booking cinema ticket
 
 📋 Requirements
 Before starting, make sure you have the following installed on your system:
