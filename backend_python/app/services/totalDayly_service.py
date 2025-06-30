@@ -103,12 +103,27 @@ def create_sample_data():
             for day in range(1, 32):
                 if month == 5 and day > 31:
                     break
-            if month == 6 and day > 30:
-                break
-            if month == 7 and day > 31:
-                break
-            create_or_update_total_day(total_money=0, total_tickets=0, day=day, month=month, year=2023)
+                if month == 6 and day > 30:
+                    break
+                if month == 7 and day > 31:
+                    break
+                create_or_update_total_day(total_money=0, total_tickets=0, day=day, month=month, year=2025)
         print("Sample data created successfully.")
     except Exception as e:
         db.session.rollback()
         print(f"An error occurred while creating sample data: {str(e)}")
+
+
+
+def update_total_date():
+    """
+    Update the total day records for the current date.
+    This function is useful for ensuring that the total day data is up-to-date.
+    """
+    try:
+        for day in range(14, 31):
+            refresh_total_day(day=day, month=6, year=2025)
+        print("Total day updated successfully.")
+    except Exception as e:
+        db.session.rollback()
+        print(f"An error occurred while updating total day: {str(e)}")

@@ -67,7 +67,7 @@ Open your MySQL client and run:
 CREATE DATABASE firmmanagement;
 ```
 
-Then import data from the provided Dump20250628.sql file.
+Then import data from the provided backup_data.sql file.
 
 ➡️ Run Backend Server
 

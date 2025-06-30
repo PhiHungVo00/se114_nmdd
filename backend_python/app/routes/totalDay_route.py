@@ -2,7 +2,8 @@ from app.services.totalDayly_service import (
     refresh_total_day,
     get_total_day_by_date,
     get_more_total_days,
-    create_sample_data
+    create_sample_data,
+    update_total_date
 )
 
 from flask import Blueprint, jsonify, request
@@ -36,7 +37,7 @@ def refresh_total_day_route():
 
 # link: localhost:5000/api/total_day/get/total-day?day=1&month=1&year=2023
 @TOTAL_DAY_BLUEPRINT.route('/get/total-day', methods=['GET'])
-# @jwt_required()
+@jwt_required()
 def get_total_day_route():
     """Get total day data."""
     try:
@@ -86,3 +87,15 @@ def create_sample_data_route():
         return jsonify({'message': 'Sample data created successfully.'}), 200
     except Exception as e:
         return jsonify({'message': f'An error occurred while creating sample data: {str(e)}'}), 500
+    
+
+# link: localhost:5000/api/total_day/update-total-date
+@TOTAL_DAY_BLUEPRINT.route('/update-total-date', methods=['POST'])
+# @jwt_required()
+def update_total_date_route():
+    """Update total date data."""
+    try:
+        update_total_date()
+        return jsonify({'message': 'Total date updated successfully.'}), 200
+    except Exception as e:
+        return jsonify({'message': f'An error occurred while updating total date: {str(e)}'}), 500
