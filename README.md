@@ -1,5 +1,19 @@
 # CINESTREAM - App booking cinema ticket
+*A cross-platform cinema-ticket booking system*
 
+CINESTREAM lets moviegoers browse showtimes, choose seats and pay securely from an Android app while cinema staff manage films, schedules and sales via an admin portal.  
+The solution is split into a **Python + Flask REST API** (with MySQL) and a **native Android (Java)** client, so you can run the server anywhere and point multiple apps to it.
+
+---
+## ✨ Key features
+| User-facing | Admin-facing |
+|-------------|--------------|
+| 🔍 Search & filter movies by genre, date and cinema | 🎞️ CRUD films, showtimes & halls |
+| 🪑 Real-time seat selection & hold logic | 🎫 View, confirm or cancel bookings |
+| 💳 Booking & in-app payment flow | 📊 Daily revenue dashboard |
+| 📜 Order history & e-tickets | 👤 Role-based accounts (admin / user) |
+
+---
 📋 Requirements
 Before starting, make sure you have the following installed on your system:
 
