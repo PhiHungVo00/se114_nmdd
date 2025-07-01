@@ -291,16 +291,16 @@ public class AdminActivityCreateNewFirm extends AppCompatActivity {
                         double rating = Double.parseDouble(ratingStr);
                         int ratingCount = Integer.parseInt(ratingCountStr);
                         if(ThumbnailImageUrl == null || ThumbnailImageUrl.isEmpty()) {
-                            Toast.makeText(this, "Thumbnail image upload failed", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, "Tải lên thumbnail thất bại", Toast.LENGTH_SHORT).show();
                             return;
                         }
                         if(coverImageUrls.isEmpty()) {
-                            Toast.makeText(this, "Cover images upload failed", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, "Tải lên ảnh bìa thất bại", Toast.LENGTH_SHORT).show();
                             return;
                         }
                         Log.d("UPLOAD_RESULT 1", "Thumbnail URL: " + ThumbnailImageUrl);
                         for (String coverImageUrl : coverImageUrls) {
-                            Log.d("UPLOAD_RESULT 1", "Cover Image URL: " + coverImageUrl);
+                            Log.d("UPLOAD_RESULT 1", "Ảnh bìa URL: " + coverImageUrl);
                         }
 
                         FirmRequest firmRequest = new FirmRequest(
@@ -329,7 +329,7 @@ public class AdminActivityCreateNewFirm extends AppCompatActivity {
         }
         catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(this, "Error creating firm: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Lỗi Tạo Phim: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -342,13 +342,13 @@ public class AdminActivityCreateNewFirm extends AppCompatActivity {
             public void onResponse(retrofit2.Call<FirmShow> call, retrofit2.Response<FirmShow> response) {
                 if (response.isSuccessful()) {
                     FirmShow firmShow = response.body();
-                    Toast.makeText(AdminActivityCreateNewFirm.this, "Firm created successfully!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AdminActivityCreateNewFirm.this, "Tạo Phim Thành Công!", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent();
                     intent.putExtra("new_firm", firmShow);
                     setResult(4, intent);
                     finish(); // Close the activity after successful creation
                 } else {
-                    Toast.makeText(AdminActivityCreateNewFirm.this, "Failed to create firm: " + response.message(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AdminActivityCreateNewFirm.this, "Tạo Phim Thất Bại: " + response.message(), Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -362,43 +362,43 @@ public class AdminActivityCreateNewFirm extends AppCompatActivity {
     Boolean checkValidInput(String name, String description, String runningTime, String rating, String ratingCount, String startDate, String endDate) {
         if (name.isEmpty() || description.isEmpty() || runningTime.isEmpty() ||
                 rating.isEmpty() || ratingCount.isEmpty() || startDate.isEmpty()) {
-            Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Vui lòng điền đầy đủ các trường", Toast.LENGTH_SHORT).show();
             return false;
         }
         try {
             Integer.parseInt(runningTime);
         } catch (NumberFormatException e) {
-            Toast.makeText(this, "Running time must be a valid number", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Thời lượng chiếu phải là một số hợp lệ", Toast.LENGTH_SHORT).show();
             return false;
         }
         try {
             Double.parseDouble(rating);
         } catch (NumberFormatException e) {
-            Toast.makeText(this, "Rating must be a valid number", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Xếp hạng phải là một số hợp lệ", Toast.LENGTH_SHORT).show();
             return false;
         }
         try {
             Integer.parseInt(ratingCount);
         } catch (NumberFormatException e) {
-            Toast.makeText(this, "Rating count must be a valid number", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Số lượng xếp hạng phải là một số hợp lệ", Toast.LENGTH_SHORT).show();
             return false;
         }
         if (thumbnailImageUri == null) {
-            Toast.makeText(this, "Please select a thumbnail image", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Vui lòng chọn một ảnh thumbnail", Toast.LENGTH_SHORT).show();
             return false;
         }
         if (coverImageUrls.isEmpty()) {
-            Toast.makeText(this, "Please select at least one cover image", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Vui lòng chọn ít nhất một ảnh bìa", Toast.LENGTH_SHORT).show();
             return false;
         }
 //        nếu thời gian bắt đầu lớn hơn thời gian kết thúc
 //        time ở định dạng yyyy-MM-dd
         if (startDate.compareTo(endDate) > 0 && !startDate.isEmpty() && !endDate.isEmpty()) {
-            Toast.makeText(this, "Start date must be before end date", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Ngày bắt đầu phải là trước ngày kết thúc", Toast.LENGTH_SHORT).show();
             return false;
         }
         if(Double.parseDouble(rating) < 0 || Double.parseDouble(rating) > 10){
-            Toast.makeText(this, "Rating must be between 0 and 10", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Xếp hạng phải nằm trong khoảng từ 0 đến 10", Toast.LENGTH_SHORT).show();
             return false;
         }
 

@@ -87,7 +87,7 @@
                 android:id="@+id/buttonPickThumbnail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Select Thumbnail"
+                android:text="Chọn Thumbnail"
                 app:cornerRadius="8dp"
                 app:backgroundTint="@color/colorAccent"
                 android:textColor="@color/white"
@@ -111,7 +111,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:backgroundTint="#888888"
-                    android:hint="Firm Name"
+                    android:hint="Tên Phim"
                     android:textColor="#FFFFFF"
                     android:textColorHint="#888888" />
 
@@ -123,15 +123,15 @@
                     android:layout_height="120dp"
                     android:layout_marginTop="8dp"
                     android:backgroundTint="#888888"
-                    android:hint="Description"
-                    android:textColor="#FFFFFF"
-                    android:textColorHint="#888888"
                     android:gravity="start|top"
+                    android:hint="Mô Tả"
                     android:inputType="textMultiLine"
                     android:maxLines="5"
-                    android:scrollbars="vertical"
                     android:overScrollMode="ifContentScrolls"
-                    android:padding="8dp" />
+                    android:padding="8dp"
+                    android:scrollbars="vertical"
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#888888" />
 
                 <EditText
                     android:id="@+id/editRunningTime"
@@ -140,7 +140,7 @@
                     android:layout_marginTop="8dp"
                     android:backgroundTint="#888888"
                     android:inputType="number"
-                    android:hint="Running Time (minutes)"
+                    android:hint="Thời Lượng (phút)"
                     android:textColor="#FFFFFF"
                     android:textColorHint="#888888" />
                 <EditText
@@ -149,7 +149,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:backgroundTint="#888888"
-                    android:hint="Rating (0-10)"
+                    android:hint="Đánh giá (0-10)"
                     android:inputType="numberDecimal"
                     android:textColor="#FFFFFF"
                     android:textColorHint="#888888" />
@@ -159,7 +159,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:backgroundTint="#888888"
-                    android:hint="Rating Count"
+                    android:hint="Số Lượng Đánh Giá"
                     android:inputType="number"
                     android:textColor="#FFFFFF"
                     android:textColorHint="#888888" />

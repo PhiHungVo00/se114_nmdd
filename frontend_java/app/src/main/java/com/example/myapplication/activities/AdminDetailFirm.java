@@ -86,8 +86,8 @@ public class AdminDetailFirm extends AppCompatActivity {
         if (firmId != -1) {
             loadFirmDetail(String.valueOf(firmId)); // Load firm details using the ID
         } else {
-            Toast.makeText(this, "Invalid firm ID", Toast.LENGTH_SHORT).show();
-            Log.e("UserDetailFirm", "Invalid firm ID received");
+            Toast.makeText(this, "Lỗi mã phim", Toast.LENGTH_SHORT).show();
+            Log.e("UserDetailFirm", "Invalid film ID received");
             finish();
         }
         ListenerBoadcast(firmId); // Set up listener for booking tickets

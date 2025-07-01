@@ -56,7 +56,7 @@ public class AdminActivityListBroadcast extends AppCompatActivity {
         role = getSharedPreferences("MyAppPrefs", MODE_PRIVATE).getString("role", "user");
         Log.d("AdminActivityListBroadcast", "Access Token in broadcast  list: " + accessToken);
         if (accessToken == null) {
-            Toast.makeText(this, "Access token not found", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Access token không tìm thấy", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }

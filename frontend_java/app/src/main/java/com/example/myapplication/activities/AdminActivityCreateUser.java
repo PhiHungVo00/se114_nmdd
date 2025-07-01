@@ -96,16 +96,16 @@ public class AdminActivityCreateUser extends AppCompatActivity {
                             }
                         } else {
                             // Handle error response
-                            Toast.makeText(AdminActivityCreateUser.this, "Error creating user: " + response.message(), Toast.LENGTH_SHORT).show();
-                            Log.e("AdminActivityCreateUser", "Error creating user: " + response.message());
+                            Toast.makeText(AdminActivityCreateUser.this, "Lỗi tạo user: " + response.message(), Toast.LENGTH_SHORT).show();
+                            Log.e("AdminActivityCreateUser", "Lỗi tạo user: " + response.message());
                         }
                     }
 
                     @Override
                     public void onFailure(Call<UserInfo> call, Throwable t) {
                         // Handle failure
-                        Toast.makeText(AdminActivityCreateUser.this, "Failed to create user: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                        Log.e("AdminActivityCreateUser", "Failed to create user: " + t.getMessage());
+                        Toast.makeText(AdminActivityCreateUser.this,"Trùng thông tin user với tài khoản khác, vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+                        Log.e("AdminActivityCreateUser", "Tạo user thất bại: " + t.getMessage());
                     }
                 }
         );

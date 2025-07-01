@@ -204,34 +204,34 @@ public class AdminActivityUpdateFirm extends AppCompatActivity {
     Boolean checkValidInput(String name, String description, String runningTime, String rating, String ratingCount) {
         if (name.isEmpty() || description.isEmpty() || runningTime.isEmpty() ||
                 rating.isEmpty() || ratingCount.isEmpty() ) {
-            Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Vui lòng điền vào tất cả các trường", Toast.LENGTH_SHORT).show();
             return false;
         }
         try {
             Integer.parseInt(runningTime);
         } catch (NumberFormatException e) {
-            Toast.makeText(this, "Running time must be a valid number", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Thời lượng chiếu không hợp lệ", Toast.LENGTH_SHORT).show();
             return false;
         }
         try {
             Double.parseDouble(rating);
         } catch (NumberFormatException e) {
-            Toast.makeText(this, "Rating must be a valid number", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Rating phải là số", Toast.LENGTH_SHORT).show();
             return false;
         }
         try {
             Integer.parseInt(ratingCount);
         } catch (NumberFormatException e) {
-            Toast.makeText(this, "Rating count must be a valid number", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Số lượng đánh giá phải là số", Toast.LENGTH_SHORT).show();
             return false;
         }
         if (thumbnailImageUri == null) {
-            Toast.makeText(this, "Please select a thumbnail image", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Vui lòng chọn một Thumbnail", Toast.LENGTH_SHORT).show();
             return false;
         }
 
         if(Double.parseDouble(rating) < 0 || Double.parseDouble(rating) > 10){
-            Toast.makeText(this, "Rating must be between 0 and 10", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Rating phải ở giữa 0 và 10", Toast.LENGTH_SHORT).show();
             return false;
         }
 
@@ -252,7 +252,7 @@ public class AdminActivityUpdateFirm extends AppCompatActivity {
                             setResult(RESULT_OK, intent);
                             finish();
                         } else {
-                            Toast.makeText(AdminActivityUpdateFirm.this, "Failed to update firm", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(AdminActivityUpdateFirm.this, "Cập nhật phim thất bại", Toast.LENGTH_SHORT).show();
                             Log.e("UPDATE_FIRM", "Error: " + response.errorBody());
                         }
                     }
@@ -295,7 +295,7 @@ public class AdminActivityUpdateFirm extends AppCompatActivity {
 
                 @Override
                 public void onFailure() {
-                    runOnUiThread(() -> Toast.makeText(AdminActivityUpdateFirm.this, "Upload failed", Toast.LENGTH_SHORT).show());
+                    runOnUiThread(() -> Toast.makeText(AdminActivityUpdateFirm.this, "Tải lên thất bại", Toast.LENGTH_SHORT).show());
                 }
             });
 

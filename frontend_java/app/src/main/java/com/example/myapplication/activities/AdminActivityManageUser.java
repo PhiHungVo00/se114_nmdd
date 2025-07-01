@@ -139,13 +139,13 @@ public class AdminActivityManageUser extends AppCompatActivity {
                             userAdapter.notifyDataSetChanged();
                         } else {
                             // Handle the case where the response is not successful
-                            Toast.makeText(AdminActivityManageUser.this, "Failed to load users", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(AdminActivityManageUser.this, "Tải người dùng thất bại", Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<List<UserInfo>> call, Throwable t) {
-                        Toast.makeText(AdminActivityManageUser.this, "Failed to load users", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AdminActivityManageUser.this, "Tải người dùng thất bại", Toast.LENGTH_SHORT).show();
                         Log.e("API_ERROR", "Failed to load users: " + t.getMessage());
                     }
                 }
@@ -173,15 +173,15 @@ public class AdminActivityManageUser extends AppCompatActivity {
                     // Remove the user from the list and notify the adapter
                     userInfoList.remove(userInfo);
                     userAdapter.notifyDataSetChanged();
-                    Toast.makeText(AdminActivityManageUser.this, "User deleted successfully", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AdminActivityManageUser.this, "Xóa người dùng thất bại", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(AdminActivityManageUser.this, "Failed to delete user", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AdminActivityManageUser.this, "Người dùng đã đặt vé không thể xóa", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<StatusMessage> call, Throwable t) {
-                Toast.makeText(AdminActivityManageUser.this, "Failed to delete user: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(AdminActivityManageUser.this, "Xóa người dùng thất bại: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }

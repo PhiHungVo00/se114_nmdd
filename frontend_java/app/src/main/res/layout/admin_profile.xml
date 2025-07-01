@@ -228,7 +228,7 @@
             android:layout_margin="8dp"
             android:layout_weight="1"
             android:backgroundTint="@color/primary_blue"
-            android:text="Edit"
+            android:text="Sửa"
             android:textColor="@color/primary_text" />
 
         <Button
@@ -238,7 +238,7 @@
             android:layout_margin="8dp"
             android:layout_weight="1"
             android:backgroundTint="@color/primary_blue"
-            android:text="Logout"
+            android:text="Đăng xuất"
             android:textColor="@color/primary_text" />
 
     </LinearLayout>

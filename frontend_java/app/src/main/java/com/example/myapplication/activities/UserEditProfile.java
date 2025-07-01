@@ -69,7 +69,7 @@ public class UserEditProfile extends AppCompatActivity {
                     String newName = editName.getText().toString();
                     String newEmail = editEmail.getText().toString();
                     String newPhone = editPhone.getText().toString();
-                    UserUpdateRequest userUpdateRequest = new UserUpdateRequest(newName, newEmail, newPhone);
+                    UserUpdateRequest userUpdateRequest = new UserUpdateRequest(newName, newPhone, newEmail);
 
                     if (isValidPhoneNumber(newPhone) && isValidEmail(newEmail)) {
                         // Call the updateProfile method to save changes
@@ -77,10 +77,10 @@ public class UserEditProfile extends AppCompatActivity {
                     } else {
                         // Show an error message if validation fails
                         if (!isValidPhoneNumber(newPhone)) {
-                            editPhone.setError("Invalid phone number");
+                            editPhone.setError("Số điện thoại không hợp lệ");
                         }
                         if (!isValidEmail(newEmail)) {
-                            editEmail.setError("Invalid email format");
+                            editEmail.setError("Định dạng email không hợp lệ");
                         }
                     }
                 }
@@ -129,7 +129,7 @@ public class UserEditProfile extends AppCompatActivity {
                     // Handle successful update
                     UserInfo updatedUser = response.body();
                     // You can update the UI or show a success message here
-                    Toast.makeText(UserEditProfile.this, "Profile updated successfully!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(UserEditProfile.this, "Hồ sơ cập nhật thành công!", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent();
                     intent.putExtra("updatedUserInfo", updatedUser);
                     setResult(RESULT_OK, intent);
@@ -145,7 +145,7 @@ public class UserEditProfile extends AppCompatActivity {
                             e.printStackTrace();
                         }
                     } else {
-                        Toast.makeText(UserEditProfile.this, "Failed to update profile", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(UserEditProfile.this, "Hồ sơ cập nhật thất bại.", Toast.LENGTH_SHORT).show();
                     }
                 }
             }

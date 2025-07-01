@@ -65,10 +65,10 @@ public class TicketAdapter extends RecyclerView.Adapter<TicketAdapter.TicketView
     public void onBindViewHolder(@NonNull TicketViewHolder holder, int position) {
         Ticket ticket = ticketList.get(position);
         if (ticket != null) {
-            holder.tvBroadcastID.setText("BroadcastID: "+  String.valueOf(ticket.getBroadcastId()));
-            holder.tvSeatName.setText("Seat Name: " + ticket.getSeatName());
-            holder.tvPrice.setText("Price: " + String.valueOf(ticket.getPrice()));
-            holder.tvDateOrder.setText("Date order: "+ ticket.getDateOrder());
+            holder.tvBroadcastID.setText("Mã lịch chiếu: "+  String.valueOf(ticket.getBroadcastId()));
+            holder.tvSeatName.setText("Tên chỗ ngồi: " + ticket.getSeatName());
+            holder.tvPrice.setText("Giá: " + String.valueOf(ticket.getPrice()));
+            holder.tvDateOrder.setText("Ngày đặt: "+ ticket.getDateOrder());
         } else {
             // Handle the case where ticket is null
             holder.tvBroadcastID.setText("N/A");

@@ -126,14 +126,14 @@ public class AdminActivityManageRoom extends AppCompatActivity {
                     roomList.addAll(response.body());
                     roomAdapter.notifyDataSetChanged();
                 } else {
-                    Toast.makeText(AdminActivityManageRoom.this, "Failed to load rooms", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AdminActivityManageRoom.this, "Tải phòng thất bại", Toast.LENGTH_SHORT).show();
                     Log.e("AdminActivityManageRoom", "Error loading rooms: " + response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<List<RoomResponse>> call, Throwable t) {
-                Toast.makeText(AdminActivityManageRoom.this, "Failed to load rooms", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AdminActivityManageRoom.this, "Tải phòng thất bại", Toast.LENGTH_SHORT).show();
                 Log.e("AdminActivityManageRoom", "Error loading rooms: " + t.getMessage());
             }
         });
@@ -185,15 +185,15 @@ public class AdminActivityManageRoom extends AppCompatActivity {
                     Toast.makeText(AdminActivityManageRoom.this, statusMessage.getMessage(), Toast.LENGTH_SHORT).show();
                     LoadRooms(); // Reload the room list after deletion
                 } else {
-                    Toast.makeText(AdminActivityManageRoom.this, "Failed to delete room", Toast.LENGTH_SHORT).show();
-                    Log.e("AdminActivityManageRoom", "Error deleting room: " + response.message());
+                    Toast.makeText(AdminActivityManageRoom.this, "Xóa phòng thất bại", Toast.LENGTH_SHORT).show();
+                    Log.e("AdminActivityManageRoom", "Lỗi xóa phòng: " + response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<StatusMessage> call, Throwable t) {
-                Toast.makeText(AdminActivityManageRoom.this, "Failed to delete room", Toast.LENGTH_SHORT).show();
-                Log.e("AdminActivityManageRoom", "Error deleting room: " + t.getMessage());
+                Toast.makeText(AdminActivityManageRoom.this, "Xóa phòng thất bại", Toast.LENGTH_SHORT).show();
+                Log.e("AdminActivityManageRoom", "Lỗi xóa phòng: " + t.getMessage());
             }
         });
 

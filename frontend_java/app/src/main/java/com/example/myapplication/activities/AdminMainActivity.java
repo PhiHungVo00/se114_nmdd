@@ -227,7 +227,7 @@ public class AdminMainActivity extends AppCompatActivity {
 
 
                     // Update the date range TextView
-                    tvDateRange.setText("Revenue from "  + revenueDays.get(0).getDate() + "/" + revenueDays.get(0).getMonth() +" to "+ revenueDays.get(size-1).getDate() + "/" + revenueDays.get(size-1).getMonth());
+                    tvDateRange.setText("Doanh thu từ "  + revenueDays.get(0).getDate() + "/" + revenueDays.get(0).getMonth() +" đến "+ revenueDays.get(size-1).getDate() + "/" + revenueDays.get(size-1).getMonth());
                     showLineChart();
                 } else {
                     Log.e("API_ERROR", "Response error: " + response.code());

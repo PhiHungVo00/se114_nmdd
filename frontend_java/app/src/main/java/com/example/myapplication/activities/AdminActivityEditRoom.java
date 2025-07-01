@@ -71,9 +71,9 @@ public class AdminActivityEditRoom extends AppCompatActivity {
             String seatsStr = editSeats.getText().toString().trim();
 
             if (roomName.isEmpty() || seatsStr.isEmpty()) {
-                editRoomName.setError("Room name is required");
-                editSeats.setError("Seats are required");
-                Toast.makeText(this ,"Please fill in all fields", Toast.LENGTH_SHORT).show();
+                editRoomName.setError("Tên phòng là bắt buộc");
+                editSeats.setError("Số ghế là bắt buộc");
+                Toast.makeText(this ,"Vui lòng điền vào tất cả các trường", Toast.LENGTH_SHORT).show();
                 return;
             }
             int seats = Integer.parseInt(seatsStr);
@@ -98,13 +98,13 @@ public class AdminActivityEditRoom extends AppCompatActivity {
                         finish();
                     } else {
                         // Handle error
-                        Toast.makeText(AdminActivityEditRoom.this, "Room had broadcast, not update", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AdminActivityEditRoom.this, "Phòng sắp có lịch chiếu, không cập nhật", Toast.LENGTH_SHORT).show();
                     }
                 }
 
                 @Override
                 public void onFailure(retrofit2.Call<RoomResponse> call, Throwable t) {
-                    Toast.makeText(AdminActivityEditRoom.this, "Room had broadcast, not update", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AdminActivityEditRoom.this, "Phòng sắp có lịch chiếu, không cập nhật", Toast.LENGTH_SHORT).show();
                 }
             });
     }

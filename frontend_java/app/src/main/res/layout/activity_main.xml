@@ -24,7 +24,7 @@
 
   <!-- TIÊU ĐỀ -->
   <TextView
-      android:text="Chào mừng bạn tới với CineAI"
+      android:text="Chào mừng bạn tới với CineStream"
       android:textSize="24sp"
       android:textStyle="bold"
       android:textColor="#FFFFFF"

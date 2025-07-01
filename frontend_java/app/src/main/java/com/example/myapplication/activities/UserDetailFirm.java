@@ -87,7 +87,7 @@ public class UserDetailFirm extends  AppCompatActivity {
         if (firmId != -1) {
             loadFirmDetail(String.valueOf(firmId)); // Load firm details using the ID
         } else {
-            Toast.makeText(this, "Invalid firm ID", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Lỗi Mã Phim", Toast.LENGTH_SHORT).show();
             Log.e("UserDetailFirm", "Invalid firm ID received");
             finish();
         }
@@ -117,7 +117,7 @@ public class UserDetailFirm extends  AppCompatActivity {
                             .into(imageFirmShow);
                     nameFirmTextView.setText(detailFirm.getName());
                     descriptionFirmTextView.setText(detailFirm.getDescription());
-                    startedFirmTextView.setText("Started on: "+ detailFirm.getStartDate());
+                    startedFirmTextView.setText("Date on: "+ detailFirm.getStartDate());
                     textRating.setText("Rating: " + detailFirm.getRating());
                     textRuntime.setText(detailFirm.getRuntime() + " min");
                     Log.e("API_RESPONSE", "Response code: " + response.code());
@@ -170,7 +170,7 @@ public class UserDetailFirm extends  AppCompatActivity {
         // Implement the logic to handle booking tickets for the firm
         // This could involve navigating to a booking screen or showing a dialog
         btnBookTicket.setOnClickListener(v -> {
-            Toast.makeText(UserDetailFirm.this, "Booking ticket for " + detailFirm.getName(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(UserDetailFirm.this, "Đặt vé cho phim " + detailFirm.getName(), Toast.LENGTH_SHORT).show();
             // Add your booking logic here
             Intent intent = new Intent(UserDetailFirm.this, UserShowListBroadcast.class); // Replace with your actual Booking Activity
             intent.putExtra("firmId", firmId);

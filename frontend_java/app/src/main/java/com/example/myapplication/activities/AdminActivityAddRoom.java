@@ -77,7 +77,7 @@ public class AdminActivityAddRoom extends AppCompatActivity {
                     finish();
                 } else {
                     // Handle error
-                    Toast.makeText(AdminActivityAddRoom.this, "Failed to create room", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AdminActivityAddRoom.this, "Tạo phòng thất bại", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -85,7 +85,7 @@ public class AdminActivityAddRoom extends AppCompatActivity {
             public void onFailure(Call<RoomResponse> call, Throwable t) {
                 // Handle failure
                 Toast.makeText(AdminActivityAddRoom.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                Log.e("AdminActivityAddRoom", "Failed to create room: " + t.getMessage());
+                Log.e("AdminActivityAddRoom", "Tạo Phòng thất bại: " + t.getMessage());
             }
         });
 

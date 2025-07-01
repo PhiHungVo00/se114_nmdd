@@ -78,7 +78,7 @@ public class AdminShowSeatsActivity extends AppCompatActivity {
         int BroadcastId = getIntent().getIntExtra("broadcastId", -1);
         Log.e("UserShowSeatsActivity", "Received broadcast ID: " + BroadcastId);
         if (BroadcastId == -1) {
-            Toast.makeText(this, "Invalid broadcast ID", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Lỗi mã lịch chiếu", Toast.LENGTH_SHORT).show();
             finish(); // Close the activity if the ID is invalid
             return;
         }
@@ -110,7 +110,7 @@ public class AdminShowSeatsActivity extends AppCompatActivity {
                     seatAdapter.notifyDataSetChanged();
                     Log.e("UserShowSeatsActivity", "Received seats: " + seatList.size());
                     if (seatList.isEmpty()) {
-                        Toast.makeText(AdminShowSeatsActivity.this, "No seats available for this broadcast.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AdminShowSeatsActivity.this, "Không có chỗ ngồi cho lịch chiếu này.", Toast.LENGTH_SHORT).show();
                     } else {
                         // Optionally, you can handle the case where seats are available
                         Log.d("UserShowSeatsActivity", "Seats loaded successfully.");
@@ -118,7 +118,7 @@ public class AdminShowSeatsActivity extends AppCompatActivity {
 
                 } else {
                     Log.e("UserShowSeatsActivity", "Response error: " + response.message());
-                    Toast.makeText(AdminShowSeatsActivity.this, "Error loading seats: " + response.message(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AdminShowSeatsActivity.this, "Lỗi tải chỗ ngồi: " + response.message(), Toast.LENGTH_SHORT).show();
 
                 }
 

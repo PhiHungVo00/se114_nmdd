@@ -103,11 +103,11 @@ public class UserActivityProfile extends AppCompatActivity {
             public void onResponse(Call<UserInfo> call, retrofit2.Response<UserInfo> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     userInfo = response.body();
-                    tvName.setText("Name: "+ userInfo.getName());
+                    tvName.setText("Họ Tên: "+ userInfo.getName());
                     tvEmail.setText("Email: " + userInfo.getEmail());
-                    tvPhone.setText("Phone: " + userInfo.getPhone());
-                    tvUsername.setText("Username: " + userInfo.getUsername());
-                    role.setText("Role:" + userInfo.getRole());
+                    tvPhone.setText("Số điện thoại: " + userInfo.getPhone());
+                    tvUsername.setText("Tên người dùng: " + userInfo.getUsername());
+                    role.setText("Vai trò: " + userInfo.getRole());
                     tvUserID.setText("UID: " + String.valueOf(userInfo.getId()));
                 } else {
                     // Handle the case where the response is not successful
@@ -201,11 +201,11 @@ public class UserActivityProfile extends AppCompatActivity {
                         if (data != null) {
                             UserInfo updatedUserInfo = data.getParcelableExtra("updatedUserInfo");
                             if (updatedUserInfo != null) {
-                                tvName.setText("Name: " + updatedUserInfo.getName());
+                                tvName.setText("Họ Tên: " + updatedUserInfo.getName());
                                 tvEmail.setText("Email: " + updatedUserInfo.getEmail());
-                                tvPhone.setText("Phone: " + updatedUserInfo.getPhone());
-                                tvUsername.setText("Username: " + updatedUserInfo.getUsername());
-                                role.setText("Role: " + updatedUserInfo.getRole());
+                                tvPhone.setText("Số Điện Thoại: " + updatedUserInfo.getPhone());
+                                tvUsername.setText("Tên Người Dùng: " + updatedUserInfo.getUsername());
+                                role.setText("Vai Trò: " + updatedUserInfo.getRole());
                                 tvUserID.setText("UID: " + updatedUserInfo.getId());
                             }
                         }

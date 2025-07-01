@@ -71,8 +71,8 @@ public class RoomAdapter extends RecyclerView.Adapter<RoomAdapter.RoomViewHolder
 
         @SuppressLint("SetTextI18n")
         public void bind(RoomResponse room) {
-            tvRoomName.setText("Room name: " + room.getName());
-            tvSeats.setText("Seats: " + room.getSeats());
+            tvRoomName.setText("Tên phòng: " + room.getName());
+            tvSeats.setText("Số chỗ ngồi: " + room.getSeats());
             buttonEdit.setOnClickListener(v -> {
                 if (listener != null) listener.onEditClick(room);
             });

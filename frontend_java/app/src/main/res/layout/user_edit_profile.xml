@@ -64,7 +64,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:textSize="@dimen/_15sdp"
-            android:text="Name"
+            android:text="Họ và Tên"
             android:textColor="#CCCCCC" />
 
         <EditText
@@ -80,7 +80,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:textSize="@dimen/_15sdp"
-            android:text="Phone"
+            android:text="Số Điện Thoại"
             android:textColor="#CCCCCC" />
 
         <EditText
@@ -124,7 +124,7 @@
                 android:layout_width="@dimen/_80sdp"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/primary_blue"
-                android:text="Cancel" />
+                android:text="Hủy" />
 
             <Space
                 android:layout_width="32dp"
@@ -135,7 +135,7 @@
                 android:layout_width="@dimen/_80sdp"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/primary_blue"
-                android:text="Save" />
+                android:text="Lưu" />
         </LinearLayout>
 
     </LinearLayout>

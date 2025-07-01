@@ -66,15 +66,15 @@ public class AdminActivityEditProfileUser extends AppCompatActivity {
             String Email = editEmail.getText().toString();
             String Phone = editPhone.getText().toString();
             if( Name.isEmpty() || Email.isEmpty() || Phone.isEmpty()) {
-                Toast.makeText(AdminActivityEditProfileUser.this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AdminActivityEditProfileUser.this, "Vui lòng điền vào tất cả các trường", Toast.LENGTH_SHORT).show();
                 return;
             }
             if (!isValidEmail(Email)) {
-                Toast.makeText(AdminActivityEditProfileUser.this, "Invalid email format", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AdminActivityEditProfileUser.this, "Định dạng email không hợp lệ", Toast.LENGTH_SHORT).show();
                 return;
             }
             if (!isValidPhoneNumber(Phone)) {
-                Toast.makeText(AdminActivityEditProfileUser.this, "Invalid phone number format", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AdminActivityEditProfileUser.this, "Định dạng số điện thoại không hợp lệ", Toast.LENGTH_SHORT).show();
                 return;
             }
             UserUpdateRequest userUpdateRequest = new UserUpdateRequest(Name, Phone, Email);
@@ -122,7 +122,7 @@ public class AdminActivityEditProfileUser extends AppCompatActivity {
                     // Handle successful update
                     UserInfo updatedUser = response.body();
                     // You can update the UI or show a success message here
-                    Toast.makeText(AdminActivityEditProfileUser.this, "Profile updated successfully!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AdminActivityEditProfileUser.this, "Hồ sơ cập nhật thành công!", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent();
                     intent.putExtra("updatedUserInfo", updatedUser);
                     setResult(1, intent);
@@ -134,12 +134,12 @@ public class AdminActivityEditProfileUser extends AppCompatActivity {
                         try {
                             String errorMessage = response.errorBody().string();
                             Toast.makeText(AdminActivityEditProfileUser.this, "Error: " + errorMessage, Toast.LENGTH_SHORT).show();
-                            Log.e("UserEditProfile", "Error updating profile: " + errorMessage);
+                            Log.e("UserEditProfile", "Cập nhật lỗi hồ sơ: " + errorMessage);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                     } else {
-                        Toast.makeText(AdminActivityEditProfileUser.this, "Failed to update profile", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AdminActivityEditProfileUser.this, "Cập nhật lỗi hồ sơ", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -148,7 +148,7 @@ public class AdminActivityEditProfileUser extends AppCompatActivity {
             public void onFailure(Call<UserInfo> call, Throwable t) {
                 // Handle the failure case
                 Toast.makeText(AdminActivityEditProfileUser.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                Log.e("UserEditProfile", "Failed to update profile: " + t.getMessage());
+                Log.e("UserEditProfile", "Cập nhật lỗi hồ sơ: " + t.getMessage());
             }
         });
     }

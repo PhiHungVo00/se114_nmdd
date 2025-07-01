@@ -49,7 +49,7 @@ public class AdminActivityCreateBroadcast extends AppCompatActivity {
 //        Get access token from shared preferences
         accessToken = getSharedPreferences("MyAppPrefs", MODE_PRIVATE).getString("access_token", null);
         if (accessToken == null) {
-            Toast.makeText(this, "Access token not found", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Access token không tìm thấy", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
@@ -228,7 +228,7 @@ public class AdminActivityCreateBroadcast extends AppCompatActivity {
                 @Override
                 public void onFailure(Call<BroadcastFirm> call, Throwable t) {
                     // Handle the failure case
-                    Toast.makeText(AdminActivityCreateBroadcast.this, "Call API lỗi: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AdminActivityCreateBroadcast.this, "Gọi API lỗi: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         );

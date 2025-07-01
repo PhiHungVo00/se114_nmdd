@@ -77,7 +77,7 @@ public class UserShowSeatsActivity extends AppCompatActivity {
         int BroadcastId = getIntent().getIntExtra("broadcastId", -1);
         Log.e("UserShowSeatsActivity", "Received broadcast ID: " + BroadcastId);
         if (BroadcastId == -1) {
-            Toast.makeText(this, "Invalid broadcast ID", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Lỗi mã lịch chiếu", Toast.LENGTH_SHORT).show();
             finish(); // Close the activity if the ID is invalid
             return;
         }
@@ -104,7 +104,7 @@ public class UserShowSeatsActivity extends AppCompatActivity {
                     seatAdapter.notifyDataSetChanged();
                     Log.e("UserShowSeatsActivity", "Received seats: " + seatList.size());
                     if (seatList.isEmpty()) {
-                        Toast.makeText(UserShowSeatsActivity.this, "No seats available for this broadcast.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(UserShowSeatsActivity.this, "Không có chỗ ngồi cho lịch chiếu này.", Toast.LENGTH_SHORT).show();
                     } else {
                         // Optionally, you can handle the case where seats are available
                         Log.d("UserShowSeatsActivity", "Seats loaded successfully.");
@@ -112,7 +112,7 @@ public class UserShowSeatsActivity extends AppCompatActivity {
 
                 } else {
                     Log.e("UserShowSeatsActivity", "Response error: " + response.message());
-                    Toast.makeText(UserShowSeatsActivity.this, "Error loading seats: " + response.message(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(UserShowSeatsActivity.this, "Lỗi tải chỗ ngồi: " + response.message(), Toast.LENGTH_SHORT).show();
 
                 }
 
@@ -130,7 +130,7 @@ public class UserShowSeatsActivity extends AppCompatActivity {
     void setCancelButton(){
         CancelButton.setOnClickListener(v -> {
             // Handle cancel button click
-            Toast.makeText(this, "Cancelled", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Đã huỷ", Toast.LENGTH_SHORT).show();
             finish(); // Close the activity or perform any other action
         });
     }
@@ -140,7 +140,7 @@ public class UserShowSeatsActivity extends AppCompatActivity {
         continueButton.setOnClickListener(v -> {
             // Handle continue button click
             if (seatAdapter.getSelectedSeat() == null) {
-                Toast.makeText(this, "Please select a seat", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Vui lòng chọn một chỗ ngồi.", Toast.LENGTH_SHORT).show();
                 return;
             }
             Seat seatSelected = seatAdapter.getSelectedSeat();
@@ -166,7 +166,7 @@ public class UserShowSeatsActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<BookingTicketResponse> call, Response<BookingTicketResponse> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(UserShowSeatsActivity.this, "Ticket booked successfully!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(UserShowSeatsActivity.this, "Vé đặt thành công.", Toast.LENGTH_SHORT).show();
                     BookingTicketResponse bookingResponse = response.body();
 
 //                    show ticket details

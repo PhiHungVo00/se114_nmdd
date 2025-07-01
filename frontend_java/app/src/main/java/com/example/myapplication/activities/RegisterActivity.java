@@ -90,7 +90,7 @@ public class RegisterActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<RegisterReponse> call, Throwable t) {
-
+                Toast.makeText(RegisterActivity.this,"Trùng thông tin user với tài khoản khác, vui lòng thử lại!", Toast.LENGTH_SHORT).show();
             }
 
         });

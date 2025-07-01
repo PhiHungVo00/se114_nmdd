@@ -85,7 +85,7 @@
                 android:id="@+id/buttonPickThumbnail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Select Thumbnail"
+                android:text="Chọn Thumbnail"
                 app:cornerRadius="8dp"
                 app:backgroundTint="@color/colorAccent"
                 android:textColor="@color/white"
@@ -99,7 +99,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="8dp"
-                android:text="Cover Images"
+                android:text="Ảnh Bìa"
                 android:textColor="#FFFFFF"
                 android:textSize="16sp" />
 
@@ -126,7 +126,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:backgroundTint="#888888"
-                    android:hint="Firm Name"
+                    android:hint="Tên phim"
                     android:textColor="#FFFFFF"
                     android:textColorHint="#888888" />
 
@@ -138,7 +138,7 @@
                     android:layout_height="120dp"
                     android:layout_marginTop="8dp"
                     android:backgroundTint="#888888"
-                    android:hint="Description"
+                    android:hint="Mô tả"
                     android:textColor="#FFFFFF"
                     android:textColorHint="#888888"
                     android:gravity="start|top"
@@ -155,7 +155,7 @@
                     android:layout_marginTop="8dp"
                     android:backgroundTint="#888888"
                     android:inputType="number"
-                    android:hint="Running Time (minutes)"
+                    android:hint="Thời lượng chiếu (phút)"
                     android:textColor="#FFFFFF"
                     android:textColorHint="#888888" />
                 <EditText
@@ -164,7 +164,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:backgroundTint="#888888"
-                    android:hint="Rating (0-10)"
+                    android:hint="Đánh giá (0-10)"
                     android:inputType="numberDecimal"
                     android:textColor="#FFFFFF"
                     android:textColorHint="#888888" />
@@ -174,7 +174,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:backgroundTint="#888888"
-                    android:hint="Rating Count"
+                    android:hint="Số lượng đánh giá"
                     android:textColor="#FFFFFF"
                     android:textColorHint="#888888" />
                 <EditText
@@ -183,20 +183,20 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:backgroundTint="#888888"
-                    android:hint="Start Date (YYYY-MM-DD)"
+                    android:hint="Ngày ra mắt (YYYY-MM-DD)"
                     android:textColor="#FFFFFF"
                     android:textColorHint="#888888" />
+
                 <EditText
                     android:id="@+id/editEndDate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:backgroundTint="#888888"
-                    android:hint="End Date (YYYY-MM-DD) (Optional)"
+                    android:hint="Ngày kết thúc (YYYY-MM-DD) (Không bắt buộc)"
                     android:textColor="#FFFFFF"
                     android:textColorHint="#888888" />
             </LinearLayout>
-
 
 
 
@@ -206,7 +206,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:text="Create Firm"
+                android:text="Tao phim"
                 android:textColor="@color/white"
                 app:backgroundTint="@color/colorAccent"
                 app:cornerRadius="8dp"

@@ -87,9 +87,9 @@ public class UserAdminShowDetailTicket extends AppCompatActivity {
 
 
             tvFirmName.setText(broadcast.getFirmName());
-            tvDate.setText("Date: "+ broadcast.getDateBroadcast());
-            tvTime.setText("Time: " + broadcast.getTimeBroadcast());
-            tvRuntime.setText("Runtime: " + broadcast.getRuntime() + " minutes");
+            tvDate.setText("Ngày chiếu: "+ broadcast.getDateBroadcast());
+            tvTime.setText("Thời gian: " + broadcast.getTimeBroadcast());
+            tvRuntime.setText("Runtime: " + broadcast.getRuntime() + " phút");
             tvRoomID.setText(String.valueOf(bookingTicketResponse.getRoomID()));
             tvSeatName.setText(String.valueOf(bookingTicketResponse.getSeatID()));
             tvDateOrder.setText(bookingTicketResponse.getDateOrder());
@@ -138,9 +138,9 @@ public class UserAdminShowDetailTicket extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     Log.d("API_RESPONSE", "Ticket deleted successfully: " + response.code());
                     // Handle successful deletion, e.g., show a message or update UI
-                    Toast.makeText(UserAdminShowDetailTicket.this, "Ticket deleted successfully", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(UserAdminShowDetailTicket.this, "Xóa vé thành công", Toast.LENGTH_SHORT).show();
                 } else {
-                    Log.e("API_ERROR", "Failed to delete ticket: " + response.code());
+                    Log.e("API_ERROR", "Xóa vé thất bại: " + response.code());
                     // Handle the case where the response is not successful
                     if (response.errorBody() != null) {
                         try {
@@ -210,7 +210,7 @@ public class UserAdminShowDetailTicket extends AppCompatActivity {
             String currentDateStr = android.text.format.DateFormat.format("yyyy-MM-dd", currentDate).toString();
             String orderDate = bookingTicketResponse.getDateOrder();
             if (!currentDateStr.equals(orderDate)) {
-                Toast.makeText(UserAdminShowDetailTicket.this, "It was too time to delete this ticket", Toast.LENGTH_SHORT).show();
+                Toast.makeText(UserAdminShowDetailTicket.this, "Đã quá thời gian hủy vé", Toast.LENGTH_SHORT).show();
                 return; // Không hiển thị nút xóa nếu ngày hiện tại không trùng với ngày đặt vé
             }
             new AlertDialog.Builder(UserAdminShowDetailTicket.this)
