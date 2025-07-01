@@ -1,16 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  File: deploymentTargetSelector.xml
+  Mục đích: Lưu cấu hình thiết bị (AVD / thiết bị vật lý) mà Android Studio
+            sẽ dùng để chạy cấu hình "app".
+-->
 <project version="4">
+  <!-- Component ghi trạng thái bộ chọn (selector) thiết bị -->
   <component name="deploymentTargetSelector">
+    <!--
+      Mỗi SelectionState tương ứng với một cấu hình Run/Debug
+      (ở đây là runConfigName="app").
+    -->
     <selectionStates>
       <SelectionState runConfigName="app">
+        <!--
+          selectionMode = DROPDOWN → người dùng đang chọn thiết bị
+          trực tiếp từ thanh dropdown của Android Studio.
+        -->
         <option name="selectionMode" value="DROPDOWN" />
+
+        <!--
+          DropdownSelection: Thiết bị đã chọn gần nhất trong dropdown,
+          kèm timestamp lưu lần chọn.
+        -->
         <DropdownSelection timestamp="2025-06-20T04:03:41.563151900Z">
+          <!--
+            Target:
+              • type="DEFAULT_BOOT"  → khởi động thiết bị ở trạng thái mặc định.
+              • handle → mô tả cách nhận diện thiết bị.
+          -->
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\huy\.android\avd\Pixel_9_Pro.avd" />
+              <!--
+                DeviceId:
+                  pluginId="LocalEmulator"        → sử dụng emulator cục bộ.
+                  identifier="path=…Pixel_9_Pro"  → đường dẫn AVD trên máy.
+              -->
+              <DeviceId pluginId="LocalEmulator"
+                        identifier="path=C:\Users\huy\.android\avd\Pixel_9_Pro.avd" />
             </handle>
           </Target>
         </DropdownSelection>
+
+        <!--
+          DialogSelection giữ thông tin khi chọn thiết bị qua hộp thoại “Select Deployment Target”.
+          Rỗng nghĩa là lần cuối không chọn bằng hộp thoại.
+        -->
         <DialogSelection />
       </SelectionState>
     </selectionStates>
