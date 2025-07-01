@@ -1,5 +1,4 @@
 import os
-from re import S
 from dotenv import load_dotenv
 load_dotenv()
 

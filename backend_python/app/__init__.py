@@ -19,7 +19,7 @@ def create_app(file_config = 'config.py'):
     jwt.init_app(app)
     migrate.init_app(app, db)
     cors.init_app(app)
-
+    
     app.register_blueprint(AUTH_BLUEPRINT, url_prefix='/api/auth')
     app.register_blueprint(USER_BLUEPRINT, url_prefix='/api/users')
     app.register_blueprint(ROOM_BLUEPRINT, url_prefix='/api/rooms')

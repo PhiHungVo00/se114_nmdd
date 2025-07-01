@@ -70,6 +70,12 @@ def delete_ticket_service(ticket_id):
         ticket = Ticket.query.filter_by(ID=ticket_id, is_delete=False).first()
         if not ticket:
             return {"message": "Ticket not found"}, 404
+        time_order = ticket.timeOrder
+        broadcast = get_broadcast_by_id(ticket.BroadcastID)
+        if not broadcast:
+            return {"message": "Broadcast not found"}, 404
+        if broadcast.dateBroadcast < datetime.now().date() or (broadcast.dateBroadcast == datetime.now().date() and time_order < datetime.now().time()):
+            return {"message": "Cannot delete ticket for past broadcasts"}, 400
         
         ticket.is_delete = True
         db.session.commit()
