@@ -1,3 +1,10 @@
+// ==========================
+//  AdminActivityHistoryBooking.java
+//  Màn lịch sử đặt vé (Admin)
+//  – Hiển thị danh sách vé đã đặt
+//  – Cho phép xem chi tiết & xoá vé
+// ==========================
+
 package com.example.myapplication.activities;
 
 import android.content.Intent;
@@ -28,149 +35,151 @@ import retrofit2.Response;
 
 public class AdminActivityHistoryBooking extends AppCompatActivity {
 
-    int RequestDeleteTicket = 4;
-    String accessToken;
-    int userId;
-    ApiTicketService apiTicketService;
-    List<Ticket> ticketList;
-    RecyclerView recyclerViewTickets;
-    TicketAdapter ticketAdapter;
-    ImageView imageBack;
+    /* ====== BIẾN TOÀN CỤC ====== */
+    private static final int REQUEST_DELETE_TICKET = 4; // requestCode trả về khi xoá vé
 
-    ActivityResultLauncher <Intent> launcherDetailTicket;
+    private String accessToken;          // JWT sau khi đăng nhập
+    private int    userId;               // ID người dùng (admin)
+    private ApiTicketService apiTicketService;
 
+    /* ====== VIEW ====== */
+    private RecyclerView recyclerViewTickets; // danh sách vé
+    private ImageView    imageBack;           // nút quay lại
+
+    /* ====== DỮ LIỆU – ADAPTER ====== */
+    private final List<Ticket> ticketList = new ArrayList<>();
+    private TicketAdapter      ticketAdapter;
+
+    /* ====== LAUNCHER KẾT QUẢ CHI TIẾT VÉ ====== */
+    private ActivityResultLauncher<Intent> launcherDetailTicket;
+
+    /* ------------------------------------------------------------ */
+    /* 1. onCreate – khởi tạo Activity                              */
+    /* ------------------------------------------------------------ */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.admin_activity_history_booked);
+
+        // 1.1 Đọc token & userId đã lưu trong SharedPreferences
         SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
         accessToken =  prefs.getString("access_token", null);
-        Log.d("TOKEN", "Token: " + accessToken);
-        userId = prefs.getInt("user_id", -1);
-        Log.d("USER_ID", "User ID: " + userId);
-        imageBack = findViewById(R.id.imageBack);
+        userId      = prefs.getInt("user_id", -1);
+        Log.d("TOKEN",    "Token: "    + accessToken);
+        Log.d("USER_ID",  "User ID: "  + userId);
 
-
-
-
+        // 1.2 Ánh xạ view
+        imageBack          = findViewById(R.id.imageBack);
         recyclerViewTickets = findViewById(R.id.historyTicketBookedRecyclerView);
+
+        // 1.3 Cấu hình RecyclerView + Adapter
         recyclerViewTickets.setLayoutManager(new LinearLayoutManager(this));
-        ticketList = new ArrayList<>();
         ticketAdapter = new TicketAdapter(ticketList, accessToken);
         recyclerViewTickets.setAdapter(ticketAdapter);
-        // Set launcher
+
+        // 1.4 Đăng ký launcher nhận kết quả từ màn chi tiết vé
         setLauncherDetailTicket();
 
-
-        // Load the booking history
+        // 1.5 Tải danh sách lịch sử đặt vé
         loadHistoryBookingTicket();
 
-
-        // Set up adparter on click listener
+        // 1.6 Bắt sự kiện click vào item → mở chi tiết vé
         ticketAdapter.setOnItemClickListener(
-                ticket -> {
-                    loadDetailTicketByApi(ticket.getId());
-                }
+            ticket -> loadDetailTicketByApi(ticket.getId())
         );
 
-
-        // Listen back button  click
-        ListenerSetupBackButton();
-
+        // 1.7 Bắt sự kiện nút quay lại
+        setupBackButtonListener();
     }
 
-
-    private  void  loadHistoryBookingTicket() {
+    /* ------------------------------------------------------------ */
+    /* 2. Gọi API lấy toàn bộ lịch sử đặt vé                       */
+    /* ------------------------------------------------------------ */
+    private void loadHistoryBookingTicket() {
         apiTicketService = ApiClient.getRetrofit().create(ApiTicketService.class);
-        // Call the API to get the booking history
-        accessToken = "Bearer " + accessToken; // Ensure the token is prefixed with "Bearer "
-        String id = String.valueOf(userId);
-        Call<List<Ticket>> call = apiTicketService.getAllTickets(accessToken);
+        String bearer = "Bearer " + accessToken;
 
-        call.enqueue(new retrofit2.Callback<List<Ticket>>() {
+        Call<List<Ticket>> call = apiTicketService.getAllTickets(bearer);
+        call.enqueue(new Callback<>() {
             @Override
-            public void onResponse(Call<List<Ticket>> call, retrofit2.Response<List<Ticket>> response) {
+            public void onResponse(Call<List<Ticket>> call, Response<List<Ticket>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Log.d("API_RESPONSE", "Booking history loaded successfully: "+ response.code());
+                    Log.d("API_RESPONSE", "Tải lịch sử thành công – code: " + response.code());
                     ticketList.clear();
                     ticketList.addAll(response.body());
                     ticketAdapter.notifyDataSetChanged();
                 } else {
-                    Log.e("API_ERROR", "Response error: " + response.code());
-                    // Handle the case where the response is not successful
-                    Log.e("API_ERROR", "Failed to load booking history: " + response.message());
+                    Log.e("API_ERROR", "Tải lịch sử lỗi – code: " + response.code());
                 }
             }
 
             @Override
             public void onFailure(Call<List<Ticket>> call, Throwable t) {
-                // Handle the failure case
-                Log.e("API_ERROR", "Failed to load booking history: " + t.getMessage());
+                Log.e("API_ERROR", "Tải lịch sử thất bại: " + t.getMessage());
             }
         });
     }
 
-    private void ListenerSetupBackButton() {
-        imageBack.setOnClickListener(v -> {
-            finish(); // Close the current activity
-        });
+    /* ------------------------------------------------------------ */
+    /* 3. Thiết lập listener cho nút back                          */
+    /* ------------------------------------------------------------ */
+    private void setupBackButtonListener() {
+        imageBack.setOnClickListener(v -> finish());
     }
 
-
+    /* ------------------------------------------------------------ */
+    /* 4. Gọi API lấy chi tiết vé → mở màn hình chi tiết           */
+    /* ------------------------------------------------------------ */
     private void loadDetailTicketByApi(int ticketId) {
-        String token = "Bearer " + accessToken;
-        ApiTicketService apiTicketService = ApiClient.getRetrofit().create(ApiTicketService.class);
-        Call<BookingTicketResponse> call = apiTicketService.getTicketDetail(token, String.valueOf(ticketId));
+        String bearer = "Bearer " + accessToken;
+        ApiTicketService svc = ApiClient.getRetrofit().create(ApiTicketService.class);
 
-        call.enqueue(new Callback<BookingTicketResponse>() {
+        Call<BookingTicketResponse> call = svc.getTicketDetail(bearer, String.valueOf(ticketId));
+        call.enqueue(new Callback<>() {
             @Override
-            public void onResponse(Call<BookingTicketResponse> call, Response<BookingTicketResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    BookingTicketResponse bookingTicketResponse = response.body();
-
-                    Intent intent = new Intent(AdminActivityHistoryBooking.this, UserAdminShowDetailTicket.class);
-                    intent.putExtra("bookingTicketResponse", bookingTicketResponse);
+            public void onResponse(Call<BookingTicketResponse> call, Response<BookingTicketResponse> rsp) {
+                if (rsp.isSuccessful() && rsp.body() != null) {
+                    Intent intent = new Intent(AdminActivityHistoryBooking.this,
+                                                UserAdminShowDetailTicket.class);
+                    intent.putExtra("bookingTicketResponse", rsp.body());
                     launcherDetailTicket.launch(intent);
-
                 } else {
-                    Log.e("API_ERROR", "Failed to load ticket details: " + response.code());
+                    Log.e("API_ERROR", "Lỗi lấy chi tiết vé – code: " + rsp.code());
                 }
             }
 
             @Override
             public void onFailure(Call<BookingTicketResponse> call, Throwable t) {
-                Log.e("API_ERROR", "Failed to load ticket details: " + t.getMessage());
+                Log.e("API_ERROR", "Lỗi lấy chi tiết vé: " + t.getMessage());
             }
         });
     }
 
-
-    private void setLauncherDetailTicket(){
+    /* ------------------------------------------------------------ */
+    /* 5. Đăng ký launcher nhận kết quả xoá vé từ màn chi tiết      */
+    /* ------------------------------------------------------------ */
+    private void setLauncherDetailTicket() {
         launcherDetailTicket = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == RequestDeleteTicket) {
-                        // Handle the result if needed
-                        Intent data = result.getData();
-                        if (data != null) {
-                            int ticketId = data.getIntExtra("ticketId", -1);
-                            if (ticketId != -1) {
-                                // Xóa vé khỏi danh sách
-                                for (int i = 0; i < ticketList.size(); i++) {
-                                    if (ticketList.get(i).getId() == ticketId) {
-                                        ticketList.remove(i);
-                                        ticketAdapter.notifyItemRemoved(i);
-                                        break;
-                                    }
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                // Khi màn chi tiết trả về requestCode == REQUEST_DELETE_TICKET
+                if (result.getResultCode() == REQUEST_DELETE_TICKET) {
+                    Intent data = result.getData();
+                    if (data != null) {
+                        int ticketId = data.getIntExtra("ticketId", -1);
+                        if (ticketId != -1) {
+                            // Xoá vé khỏi danh sách hiện tại
+                            for (int i = 0; i < ticketList.size(); i++) {
+                                if (ticketList.get(i).getId() == ticketId) {
+                                    ticketList.remove(i);
+                                    ticketAdapter.notifyItemRemoved(i);
+                                    break;
                                 }
                             }
                         }
                     }
                 }
+            }
         );
     }
-
-
-
-
 }
