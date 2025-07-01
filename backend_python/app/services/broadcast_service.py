@@ -8,11 +8,11 @@ from datetime import timedelta, datetime
 from sqlalchemy import and_
 
 # check không cho broadcast trùng thời gian của room trong khoảng thời gian 3h
-def is_broadcast_time_conflict(room_id, time_broadcast, date_broadcast):
+def is_broadcast_time_conflict(room_id, time_broadcast, date_broadcast, running_time=0):
     """Check if the broadcast time conflicts with existing broadcasts in the room."""
     current_time = datetime.combine(date_broadcast, time_broadcast)
     start_time = current_time
-    end_time = current_time + timedelta(hours=3)
+    end_time = current_time + timedelta(hours =3)
     existing_broadcasts = Broadcast.query.filter(
         Broadcast.RoomID == room_id,
         Broadcast.is_delete == False,
@@ -65,9 +65,10 @@ def create_broadcast(room_id, firm_id, time_broadcast, date_broadcast, price, se
 
     if firm.end_date != None and firm.end_date < date_broadcast:
         raise ValueError("Broadcast date is outside the firm's active period")
+    running_time = firm.runtime if firm.runtime else 0
 
     print(f"Formatted time: {time_broadcast}, Formatted date: {date_broadcast}")
-    if is_broadcast_time_conflict(room_id, time_broadcast, date_broadcast):
+    if is_broadcast_time_conflict(room_id, time_broadcast, date_broadcast, running_time):
         raise ValueError("Broadcast time conflicts with existing broadcasts in the room")
     
     if datetime.combine(date_broadcast, time_broadcast) < datetime.now():
