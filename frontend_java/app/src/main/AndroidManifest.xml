@@ -13,15 +13,14 @@
 
     <application
         android:allowBackup="true"
-        android:dataExtractionRules="@xml/data_extraction_rules"   <!-- Quy tắc extract dữ liệu cho backup Android 12+ -->
-        android:fullBackupContent="@xml/backup_rules"              <!-- Quy tắc backup legacy -->
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:networkSecurityConfig="@xml/network_sercurity_config" <!-- Cấu hình bảo mật mạng: HTTP/HTTPS... -->
+        android:networkSecurityConfig="@xml/network_sercurity_config"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true"                                <!-- Hỗ trợ giao diện từ phải sang trái -->
-        android:theme="@style/Theme.MyApplication"
-        tools:targetApi="31">                                     <!-- Định hướng compile/target cho IDE -->
+        android:supportsRtl="true"
+        android:theme="@style/Theme.MyApplication">
 
         <!-- MainActivity: entry point của app -->
         <activity
