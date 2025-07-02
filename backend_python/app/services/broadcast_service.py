@@ -2,6 +2,7 @@ from app.models.BroadCast import Broadcast
 from app.models.Room import Room
 from app.models.Seat import Seat
 from app.models.Firm import Firm
+from app.models.Ticket import Ticket
 from app import db
 from app.utils.helper import format_date, format_time, format_datetime
 from datetime import timedelta, datetime
@@ -184,7 +185,15 @@ def update_broadcast(broadcast_id, room_id=None, firm_id=None, time_broadcast=No
 def delete_broadcast(broadcast_id):
     """Soft delete a broadcast by setting is_delete to True."""
     broadcast = get_broadcast_by_id(broadcast_id)
-    if broadcast.tickets:
+    if not broadcast:
+        raise ValueError("Broadcast not found") 
+    ticket = Ticket.query.filter(
+        and_(
+            Ticket.BroadcastID == broadcast.ID,
+            Ticket.is_delete == False,
+        )
+    ).first()
+    if ticket:
         raise ValueError("Cannot delete broadcast with existing tickets")
     broadcast.is_delete = True
     db.session.commit()

@@ -74,7 +74,7 @@ def delete_ticket_service(ticket_id):
         broadcast = get_broadcast_by_id(ticket.BroadcastID)
         if not broadcast:
             return {"message": "Broadcast not found"}, 404
-        if broadcast.dateBroadcast < datetime.now().date() or (broadcast.dateBroadcast == datetime.now().date() and time_order < datetime.now().time()):
+        if broadcast.dateBroadcast < datetime.now().date() or (broadcast.dateBroadcast == datetime.now().date() and time_order < datetime.now().time() + datetime.timedelta(minutes=30)):
             return {"message": "Cannot delete ticket for past broadcasts"}, 400
         
         ticket.is_delete = True
@@ -135,10 +135,9 @@ def get_ticket_detail_by_id_service(ticket_id):
 def getDetailTicketBySeatID(seat_id):
     """Retrieve detailed information about a ticket by its Seat ID."""
     try:
-        ticket = Ticket.query.filter_by(SeatID=seat_id, is_delete=False).first()
+        ticket = Ticket.query.filter(Ticket.SeatID==seat_id, Ticket.is_delete==False).first()
         if not ticket:
             raise ValueError("Ticket not found for this seat")
-        
         return get_ticket_detail_by_id_service(ticket.ID)
     except Exception as e:
         raise ValueError(f"Error retrieving ticket detail by seat ID: {str(e)}")
