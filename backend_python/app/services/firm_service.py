@@ -91,8 +91,12 @@ def delete_firm(firm_id):
     firm = get_firm_by_id(firm_id)
     if not firm:
         raise ValueError("Firm not found")
-    broadcasts = Broadcast.query.filter(Broadcast.FirmID == firm.ID, Broadcast.is_delete == False).first()
+    broadcasts = Broadcast.query.filter(Broadcast.FirmID == firm.ID,
+                                        Broadcast.is_delete == False, 
+                                        Broadcast.dateBroadcast >= datetime.now().date()
+                                        ).first()
     if broadcasts:
+        print(broadcasts.serialize())
         raise ValueError("Cannot delete firm with active broadcasts")
 
     firm.is_delete = True

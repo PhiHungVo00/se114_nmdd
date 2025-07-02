@@ -48,7 +48,7 @@ def get_firm_broadcasts_route(firm_id):
     firm = get_firm_by_id(firm_id)
     if not firm:
         return jsonify({'message': 'Firm not found'}), 404
-    broadcasts = firm.get_broadcasts()
+    broadcasts = firm.broadcasts()
     return jsonify([broadcast.serialize() for broadcast in broadcasts]), 200
 
 
