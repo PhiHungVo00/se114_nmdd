@@ -72,44 +72,7 @@ def show_movies(movies):
         print("📭 Danh sách phim trống!")
         return
     
-    # Format bảng đẹp mắt
-    print("\n" + "=" * MENU_WIDTH)
-    print(f"{'DANH SÁCH PHIM':^{MENU_WIDTH}}")
-    print("=" * MENU_WIDTH)
-    print(f"{'ID':<5}{'Tên phim':<20}{'Đạo diễn':<15}{'Năm':<6}")
-    print("-" * MENU_WIDTH)
-    
-    for movie in movies:
-        print(f"{movie['id']:<5}{movie['name'][:18]:<20}{movie['director'][:13]:<15}{movie['year']:<6}")
-    
-    print("=" * MENU_WIDTH)
-    print(f"Tổng số phim: {len(movies)}")
 
-def search_movie(movies):
-    """Tìm kiếm phim theo tên"""
-    keyword = input("Nhập từ khóa tìm kiếm: ").lower().strip()
-    if not keyword:
-        print("⚠️ Vui lòng nhập từ khóa!")
-        return
-    
-    results = [
-        m for m in movies 
-        if keyword in m['name'].lower() 
-        or keyword in m['director'].lower()
-    ]
-    
-    if not results:
-        print("🔍 Không tìm thấy phim phù hợp!")
-        return
-    
-    # Hiển thị kết quả
-    print(f"\n🔎 Tìm thấy {len(results)} kết quả:")
-    for idx, movie in enumerate(results, 1):
-        print(f"{idx}. {movie['name']} - {movie['director']} ({movie['year']})")
-
-# =========================================
-# GIAO DIỆN NGƯỜI DÙNG (THÂN THIỆN)
-# =========================================
 def print_menu():
     """In menu định dạng đẹp"""
     print("\n" + "=" * MENU_WIDTH)
@@ -120,29 +83,9 @@ def print_menu():
     print("3. Tìm kiếm phim")
     print("4. Thoát chương trình")
     print("=" * MENU_WIDTH)
-
-# =========================================
-# HÀM CHẠY CHƯƠNG TRÌNH (CÓ XỬ LÝ LỖI)
-# =========================================
+    print(f"{'ID':<5} {'Tên Phim':<20} {'Đạo Diễn':<15} {'Năm':<10}")   
 def main():
     movies = load_data()
-    
-    while True:
-        print_menu()
-        choice = input("Chọn chức năng: ").strip()
         
-        # Xử lý lựa chọn
-        if choice == '1':
-            add_movie(movies)
-        elif choice == '2':
-            show_movies(movies)
-        elif choice == '3':
-            search_movie(movies)
-        elif choice == '4':
-            print("👋 Đã thoát chương trình!")
-            break
-        else:
-            print("⚠️ Vui lòng chọn 1-4!")
-
 if __name__ == "__main__":
     main()
