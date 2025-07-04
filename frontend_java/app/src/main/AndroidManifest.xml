@@ -43,6 +43,9 @@
             android:name=".activities.UserShowSeatsActivity"
             android:exported="false" />
         <activity
+            android:name=".activities.PaymentActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.UserMainActivity"
             android:exported="false" />
         <activity

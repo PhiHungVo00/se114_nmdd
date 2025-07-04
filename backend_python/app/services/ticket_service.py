@@ -6,6 +6,7 @@ from app.utils.helper import format_date, format_datetime, format_time
 from .totalDayly_service import create_or_update_total_day
 from datetime import datetime
 from .broadcast_service import get_broadcast_by_id
+from .email_service import send_ticket_email
 from sqlalchemy import and_
 from .seat_service import get_seat_available, set_seat_bought, set_seat_available
 
@@ -31,7 +32,14 @@ def create_ticket_service(user_id, broadcast_id, seat_id):
         # Set the seat as bought
         set_seat_bought(seat_id)
         create_or_update_total_day(price, 1, ticket.dateOrder.day, ticket.dateOrder.month, ticket.dateOrder.year)
-        return get_ticket_detail_by_id_service(ticket.ID)
+        detail = get_ticket_detail_by_id_service(ticket.ID)
+        user = User.query.filter_by(ID=user_id, is_delete=False).first()
+        if user and user.email:
+            try:
+                send_ticket_email(user.email, detail)
+            except Exception as e:
+                print(f'Failed to send ticket email: {e}')
+        return detail
     except Exception as e:
         db.session.rollback()
         raise ValueError(f"Error creating ticket: {str(e)}")

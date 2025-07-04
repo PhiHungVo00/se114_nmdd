@@ -83,6 +83,7 @@ public class UserShowListBroadcast extends AppCompatActivity {
                         Intent intent = new Intent(UserShowListBroadcast.this, UserShowSeatsActivity.class);
                         intent.putExtra("broadcastId", broadcastFirm.getID());
                         intent.putExtra("firmId", firmId);
+                        intent.putExtra("price", broadcastFirm.getPrice());
                         startActivity(intent);
                     }
 

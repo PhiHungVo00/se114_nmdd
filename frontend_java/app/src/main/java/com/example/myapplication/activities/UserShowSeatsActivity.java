@@ -27,6 +27,7 @@ import com.example.myapplication.models.Seat;
 import com.example.myapplication.network.ApiBroadcastService;
 import com.example.myapplication.network.ApiClient;
 import com.example.myapplication.network.ApiTicketService;
+import com.example.myapplication.activities.PaymentActivity;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,6 +44,7 @@ public class UserShowSeatsActivity extends AppCompatActivity {
     private SeatAdapter seatAdapter;
     private List<Seat> seatList;
     private BookingTicketRequest bookingTicketRequest; // Assuming you have a BookingTicketRequest model
+    private double price;
 
     Button continueButton; // Assuming you have a continue button in your layout
     Button CancelButton; // Assuming you have a cancel button in your layout
@@ -75,6 +77,7 @@ public class UserShowSeatsActivity extends AppCompatActivity {
 
 //  2. Load seats from api
         int BroadcastId = getIntent().getIntExtra("broadcastId", -1);
+        price = getIntent().getDoubleExtra("price", 0);
         Log.e("UserShowSeatsActivity", "Received broadcast ID: " + BroadcastId);
         if (BroadcastId == -1) {
             Toast.makeText(this, "Lỗi mã lịch chiếu", Toast.LENGTH_SHORT).show();
@@ -138,20 +141,17 @@ public class UserShowSeatsActivity extends AppCompatActivity {
     void setContinueButton(int broadcastId) {
         continueButton = findViewById(R.id.btnContinue);
         continueButton.setOnClickListener(v -> {
-            // Handle continue button click
             if (seatAdapter.getSelectedSeat() == null) {
                 Toast.makeText(this, "Vui lòng chọn một chỗ ngồi.", Toast.LENGTH_SHORT).show();
                 return;
             }
             Seat seatSelected = seatAdapter.getSelectedSeat();
 
-            // Assuming you have a method to handle booking logic
-            bookingTicketRequest = new BookingTicketRequest(broadcastId, seatSelected.getId());
-            bookingTicketRequest.setSeatId(seatAdapter.getSelectedSeat().getId());
-            // Add other necessary fields to bookingTicketRequest
-
-            // Call your booking API here
-            bookTicketByApi(bookingTicketRequest);
+            Intent intent = new Intent(UserShowSeatsActivity.this, PaymentActivity.class);
+            intent.putExtra("broadcastId", broadcastId);
+            intent.putExtra("seatId", seatSelected.getId());
+            intent.putExtra("price", price);
+            startActivity(intent);
 
         });
     }
